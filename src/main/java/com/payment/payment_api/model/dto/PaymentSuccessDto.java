@@ -1,7 +1,9 @@
 package com.payment.payment_api.model.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class PaymentSuccessDto {
 	String mid; // 가맹점 Id -> tosspayments

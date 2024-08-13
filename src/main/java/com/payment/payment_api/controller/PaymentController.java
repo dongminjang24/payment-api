@@ -1,6 +1,8 @@
 package com.payment.payment_api.controller;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +70,7 @@ public class PaymentController {
 
 	@GetMapping("/toss/cancel/point")
 	public ResponseEntity tossPaymentCancelPoint(
-		String email,
+		@RequestParam String email,
 		@RequestParam String paymentKey,
 		@RequestParam String cancelReason) {
 
@@ -82,8 +84,8 @@ public class PaymentController {
 
 	@GetMapping("/history")
 	public ResponseEntity tossPaymentCancelPoint(
-		String email,
-		Pageable pageable){
+		@RequestParam String email,
+		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok().body(new SingleResponse<>(
 			paymentService.findAllChargingHistories(email,pageable)
 		));
