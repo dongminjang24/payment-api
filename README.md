@@ -1,1 +1,1 @@
-# paymnet-api
+# payment-api

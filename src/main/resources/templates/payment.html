@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <title>결제하기</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<section>
+    <span>총 포인트 충전 금액 :</span>
+    <span>5000원</span>
+    <button id="payment-button">5000원 충전하기</button>
+</section>
+<script>
+    var clientKey = 'test_client_key';
+    var tossPayments = TossPayments(clientKey)
+
+    var button = document.getElementById('payment-button')
+    button.addEventListener('click', function () {
+        $.ajax({
+            url: '/api/v1/payments/toss',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                payType: 'CARD',
+                amount: 5000,
+                orderName: '포인트 충전',
+                email: 'user@example.com'
+            }),
+            success: function(response) {
+                var paymentRequestDto = response.data;
+                tossPayments.requestPayment('CARD', {
+                    amount: paymentRequestDto.amount,
+                    orderId: paymentRequestDto.orderId,
+                    orderName: paymentRequestDto.orderName,
+                    customerName: paymentRequestDto.customerName,
+                    customerEmail: paymentRequestDto.customerEmail,
+                    successUrl: window.location.origin + '/api/v1/payments/toss/success',
+                    failUrl: window.location.origin + '/api/v1/payments/toss/fail'
+                })
+            },
+            error: function(xhr, status, error) {
+                alert("결제 요청 중 오류가 발생했습니다.");
+            }
+        });
+    })
+</script>
+</body>
+</html>
