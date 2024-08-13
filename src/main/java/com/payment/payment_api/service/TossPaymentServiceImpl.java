@@ -47,6 +47,7 @@ public class TossPaymentServiceImpl implements PaymentService {
 	@Value("${snowflake.worker-id}")
 	private long workerId;
 
+	private final RestTemplate restTemplate;
 	private final PaymentRepository paymentRepository;
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
@@ -99,14 +100,9 @@ public class TossPaymentServiceImpl implements PaymentService {
 	}
 
 	public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount) {
-
-		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		Map<String, Object> params = new HashMap<>();
-		log.debug("paymentKey: {}", paymentKey);
-		log.debug("orderId: {}", orderId);
-		log.debug("amount: {}", amount);
 		params.put("paymentKey", paymentKey);
 		params.put("orderId", orderId);
 		params.put("amount", amount);
@@ -163,6 +159,7 @@ public class TossPaymentServiceImpl implements PaymentService {
 			() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND)
 		);
 
+
 		payment.setPaySuccessYN(false);
 		payment.setFailReason(message);
 	}
@@ -185,7 +182,7 @@ public class TossPaymentServiceImpl implements PaymentService {
 	}
 
 	private Map tossPaymentCancel(String paymentKey, String cancelReason) {
-		RestTemplate restTemplate = new RestTemplate();
+
 		HttpHeaders headers = getHeaders();
 		Map<String, Object> params = new HashMap<>();
 		HttpEntity<Map<String, Object>> mapHttpEntity = new HttpEntity<>(params, headers);

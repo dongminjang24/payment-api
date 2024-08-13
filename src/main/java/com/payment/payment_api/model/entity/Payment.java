@@ -1,6 +1,8 @@
 package com.payment.payment_api.model.entity;
 
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.payment_api.model.dto.PaymentRequestDto;
 import com.payment.payment_api.model.enum_type.PayType;
@@ -52,7 +54,8 @@ public class Payment extends BaseEntity {
 	@Column(nullable = false, name = "order_id")
 	private String orderId;
 
-	private boolean paySuccessYN;
+	@Column(nullable = false)
+	private boolean paySuccessYN = false;
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.PERSIST)

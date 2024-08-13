@@ -65,8 +65,6 @@ class PaymentControllerTest {
 	@MockBean
 	private TossPaymentServiceImpl tossPaymentService;
 
-	@MockBean
-	private MemberService memberService;
 
 	@MockBean
 	private TossPaymentConfig tossPaymentConfig;
