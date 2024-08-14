@@ -33,5 +33,5 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           scp -i private_key -o StrictHostKeyChecking=no build/libs/*.jar ${USER}@${HOST}:~/app/
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-            cd ~/app && ./deploy.sh
+            ~/deploy.sh
           '
