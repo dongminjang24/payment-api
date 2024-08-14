@@ -3,6 +3,8 @@ name: Deploy to EC2
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -16,24 +18,37 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Deploy to S3
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
         run: |
-          zip -r app.zip appspec.yml scripts/ build/libs/*.jar
-          aws s3 cp app.zip s3://cicd-s3-payment/app.zip
-
-      - name: Deploy to EC2 with CodeDeploy
-        run: |
-          aws deploy create-deployment \
-            --application-name codedepoly \
-            --deployment-group-name production-deploy \
-            --s3-location bucket=cicd-s3-payment,bundleType=zip,key=app.zip
+          # SSH 키 설정
+          echo "$PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          
+          # JAR 파일 전송
+          scp -i private_key -o StrictHostKeyChecking=no build/libs/payment-api-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:~/app/
+          if [ $? -ne 0 ]; then
+            echo "Failed to copy JAR file"
+            exit 1
+          fi
+          
+          # 배포 스크립트 실행
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+            cd ~/app
+            ./deploy.sh
+          '
+          if [ $? -ne 0 ]; then
+            echo "Deployment script failed"
+            exit 1
+          fi
+          
+          echo "Deployment completed successfully"
