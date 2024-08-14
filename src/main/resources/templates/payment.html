@@ -12,8 +12,8 @@
     <span>5000원</span>
     <button id="payment-button">5000원 충전하기</button>
 </section>
-<script>
-    var clientKey = 'test_client_key';
+<script th:inline="javascript">
+    var clientKey = /*[[${clientKey}]]*/ 'default_client_key';
     var tossPayments = TossPayments(clientKey)
 
     var button = document.getElementById('payment-button')
@@ -28,7 +28,7 @@
                 orderName: '포인트 충전',
                 email: 'user@example.com'
             }),
-            success: function(response) {
+            success: function (response) {
                 var paymentRequestDto = response.data;
                 tossPayments.requestPayment('CARD', {
                     amount: paymentRequestDto.amount,
@@ -40,7 +40,7 @@
                     failUrl: window.location.origin + '/api/v1/payments/toss/fail'
                 })
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert("결제 요청 중 오류가 발생했습니다.");
             }
         });
