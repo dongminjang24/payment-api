@@ -19,9 +19,6 @@ public class PaymentPageController {
 
 	@GetMapping("/payment")
 	public String showPaymentPage(Model model) {
-		String clientKey = tossPaymentConfig.getClientApiKey();
-		log.info("Controller: Client Key = {}", clientKey);
-
 		model.addAttribute("clientKey", tossPaymentConfig.getClientApiKey());
 		model.addAttribute("totalAmount", 58500);
 		model.addAttribute("successUrl", tossPaymentConfig.getSuccessUrl());
