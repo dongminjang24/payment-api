@@ -52,5 +52,5 @@ jobs:
           script: |
             cd ~/app
             echo "IMAGE=$IMAGE" >> .env
-            docker-compose pull
+            chmod +x deploy.sh  # 실행 권한 부여
             ./deploy.sh
