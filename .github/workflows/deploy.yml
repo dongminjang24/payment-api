@@ -30,7 +30,7 @@ jobs:
           host: ${{ secrets.HOST_EC2 }} # EC2 퍼블릭 IPv4 DNS
           username: ${{ secrets.USERNAME }} # ubuntu
           port: ${{ secrets.HOST_PORT }}
-          key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             pwd
             whoami
