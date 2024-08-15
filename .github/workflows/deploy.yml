@@ -28,7 +28,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}  # 이 부분이 누락되었습니다
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.HOST_PORT }}
           script: |
             pwd

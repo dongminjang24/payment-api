@@ -9,8 +9,8 @@
 <body>
 <section>
     <span>총 포인트 충전 금액 :</span>
-    <span>5000원</span>
-    <button id="payment-button">5000원 충전하기</button>
+    <span>10000원</span>
+    <button id="payment-button">10000원 충전하기</button>
 </section>
 <script th:inline="javascript">
     var clientKey = /*[[${clientKey}]]*/ 'default_client_key';
@@ -24,7 +24,7 @@
             contentType: 'application/json',
             data: JSON.stringify({
                 payType: 'CARD',
-                amount: 5000,
+                amount: 10000,
                 orderName: '포인트 충전',
                 email: 'user@example.com'
             }),
