@@ -6,7 +6,9 @@ plugins {
 
 group = 'com.payment'
 version = '0.0.1-SNAPSHOT'
-
+springBoot {
+	mainClass = 'com.payment.payment_api.PaymentApiApplication'
+}
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
