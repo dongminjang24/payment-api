@@ -51,6 +51,7 @@ jobs:
           envs: IMAGE
           script: |
             cd ~/app
-            echo "IMAGE=$IMAGE" >> .env
-            chmod +x deploy.sh  # 실행 권한 부여
+            sed -i '/^IMAGE=/d' .env  # 기존 IMAGE 라인 삭제
+            echo "IMAGE=$IMAGE" >> .env  # 새 IMAGE 값 추가
+            chmod +x deploy.sh
             ./deploy.sh
