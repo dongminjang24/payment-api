@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
     <!--변수 값 설정 -->
-    <property name="LOG_DIR" value="./logs"/>
+    <property name="LOG_DIR" value="/logs"/>
     <property name="LOG_FILE_NAME" value="log_file"/>
     <property name="LOGS_LEVEL" value="info"/>
 
