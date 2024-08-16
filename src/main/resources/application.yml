@@ -78,7 +78,9 @@ payment:
 logging:
   level:
     root: INFO
+  config: classpath:logback-spring.xml
 
 snowflake:
   worker-id: 0
   datacenter-id: 0
+
