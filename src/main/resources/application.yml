@@ -41,9 +41,6 @@ logging:
   level:
     root: DEBUG
 
-snowflake:
-  worker-id: 0
-  datacenter-id: 0
 
 ---
 spring:
@@ -80,7 +77,4 @@ logging:
     root: INFO
   config: classpath:logback-spring.xml
 
-snowflake:
-  worker-id: 0
-  datacenter-id: 0
 

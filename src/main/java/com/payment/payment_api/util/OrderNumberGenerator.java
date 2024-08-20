@@ -1,14 +1,44 @@
 package com.payment.payment_api.util;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class OrderNumberGenerator {
 	private final SnowflakeIdGenerator snowflake;
 
-	public OrderNumberGenerator(long datacenterId, long workerId) {
+	public OrderNumberGenerator(){
+		long datacenterId = 0;
+		long workerId = 0;
+		try {
+			datacenterId = generateDatacenterId();
+			workerId = generateWorkerId();
+		} catch (Exception e) {
+			log.warn("worker Id 및 datacenterId를 생성하는데 실패하였습니다.{}", e.getMessage());
+		}
 		this.snowflake = new SnowflakeIdGenerator(datacenterId, workerId);
+	}
+
+	// 데이터센터 ID 생성, 네트워크 인터페이스의 mac 주소를 이용하여 생성
+	private long generateDatacenterId() throws SocketException, UnknownHostException {
+		NetworkInterface ni = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
+		byte[] hardwareAddress = ni.getHardwareAddress();
+		int id = ((0x000000FF & (int)hardwareAddress[hardwareAddress.length-1]) |
+			(0x0000FF00 & (((int)hardwareAddress[hardwareAddress.length-2]) << 8))) >> 6;
+		return id % 32;
+	}
+
+	// 워커 ID 생성, IP 주소를 이용하여 생성
+	private long generateWorkerId() throws UnknownHostException {
+		InetAddress ip = InetAddress.getLocalHost();
+		return (ip.getHostAddress().hashCode() & 0xffff) % 32;
 	}
 
 	public String generateOrderNumber() {
@@ -18,6 +48,7 @@ public class OrderNumberGenerator {
 		String uniquePart = String.format("%07d", snowflakeId % 10000000L);
 		return datePart + uniquePart;
 	}
+
 
 	private String generateCompressedDatePart(long snowflakeId) {
 		// 스노우플레이크 ID에서 타임스탬프 추출

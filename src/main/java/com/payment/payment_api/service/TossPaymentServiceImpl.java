@@ -41,11 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TossPaymentServiceImpl implements PaymentService {
 
 
-	@Value("${snowflake.datacenter-id}")
-	private long datacenterId;
 
-	@Value("${snowflake.worker-id}")
-	private long workerId;
 
 	private final RestTemplate restTemplate;
 	private final PaymentRepository paymentRepository;
@@ -62,7 +58,7 @@ public class TossPaymentServiceImpl implements PaymentService {
 			throw new CustomException(ErrorCode.INVALID_PAYMENT_AMOUNT);
 		}
 		//
-		OrderNumberGenerator orderNumberGenerator = new OrderNumberGenerator(datacenterId, workerId);
+		OrderNumberGenerator orderNumberGenerator = new OrderNumberGenerator();
 		String orderNumber = orderNumberGenerator.generateOrderNumber();
 		payment.setOrderId(orderNumber);
 		payment.setCustomer(member);
