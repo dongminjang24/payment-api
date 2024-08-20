@@ -39,15 +39,10 @@
         </root>
     </springProfile>
 
-    <!-- 개발 환경 설정 -->
-    <springProfile name="dev">
-        <root level="${LOGS_LEVEL}">
-            <appender-ref ref="FILE"/>
-        </root>
-    </springProfile>
+
 
     <!-- 로컬 환경 설정 -->
-    <springProfile name="local">
+    <springProfile name="dev">
         <root level="${LOGS_LEVEL}">
             <appender-ref ref="CONSOLE"/>
         </root>

@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,15 +27,26 @@ public class OrderNumberGenerator {
 		this.snowflake = new SnowflakeIdGenerator(datacenterId, workerId);
 	}
 
-	// 데이터센터 ID 생성, 네트워크 인터페이스의 mac 주소를 이용하여 생성
-	private long generateDatacenterId() throws SocketException, UnknownHostException {
-		NetworkInterface ni = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
-		byte[] hardwareAddress = ni.getHardwareAddress();
-		int id = ((0x000000FF & (int)hardwareAddress[hardwareAddress.length-1]) |
-			(0x0000FF00 & (((int)hardwareAddress[hardwareAddress.length-2]) << 8))) >> 6;
-		return id % 32;
+	private long generateFallbackId() {
+		return new Random().nextInt(32);  // 0-31 사이의 값만 반환
 	}
 
+	// 데이터센터 ID 생성, 네트워크 인터페이스의 mac 주소를 이용하여 생성
+	private long generateDatacenterId() throws SocketException, UnknownHostException {
+		try {
+			NetworkInterface ni = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
+			byte[] hardwareAddress = ni.getHardwareAddress();
+			if (hardwareAddress == null) {
+				return generateFallbackId();
+			}
+			int id = ((0x000000FF & (int)hardwareAddress[hardwareAddress.length-1]) |
+				(0x0000FF00 & (((int)hardwareAddress[hardwareAddress.length-2]) << 8))) >> 6;
+			return id % 32;  // 항상 0-31 사이의 값을 반환하도록 보장
+		} catch (Exception e) {
+			log.warn("Error generating datacenter ID, using fallback", e);
+			return generateFallbackId();
+		}
+	}
 	// 워커 ID 생성, IP 주소를 이용하여 생성
 	private long generateWorkerId() throws UnknownHostException {
 		InetAddress ip = InetAddress.getLocalHost();
@@ -75,18 +87,18 @@ public class OrderNumberGenerator {
 		private static final long SEQUENCE_BITS = 12L;
 
 		// 최대값 계산
-		private static final long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
-		private static final long MAX_DATACENTER_ID = -1L ^ (-1L << DATACENTER_ID_BITS);
+		private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
+		private static final long MAX_DATACENTER_ID = ~(-1L << DATACENTER_ID_BITS);
 
 		// 비트 시프트 값 계산
 		private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
 		private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
 		private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS;
 
-		private static final long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
+		private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
 
-		private long workerId;
-		private long datacenterId;
+		private final long workerId;
+		private final long datacenterId;
 		private long sequence = 0L;
 		private long lastTimestamp = -1L;
 

@@ -59,6 +59,7 @@ public class Payment extends BaseEntity {
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "customer")
 	private Member customer;
 
 	@Column
