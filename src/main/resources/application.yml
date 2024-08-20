@@ -75,6 +75,5 @@ payment:
 logging:
   level:
     root: INFO
-  config: classpath:logback-spring.xml
 
 
