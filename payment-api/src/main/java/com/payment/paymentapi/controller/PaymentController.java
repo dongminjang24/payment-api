@@ -79,10 +79,9 @@ public class PaymentController {
 
 	}
 
-	// http://localhost:8080/history?email=user@example.com&page=0&size=10&sort=createdAt,desc
 
 	@GetMapping("/history")
-	public ResponseEntity tossPaymentCancelPoint(
+	public ResponseEntity tossPaymentAllHistory(
 		@RequestParam String email,
 		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok().body(new SingleResponse<>(

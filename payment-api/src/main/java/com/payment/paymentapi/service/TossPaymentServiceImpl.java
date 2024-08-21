@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.PaymentErrorCode;
 import com.payment.common.exception.UserErrorCode;
+import com.payment.common.model.constants.CacheKey;
 import com.payment.common.model.dto.MemberDto;
 import com.payment.common.model.dto.PaymentSuccessDto;
 import com.payment.common.model.entity.Member;
@@ -194,6 +196,9 @@ public class TossPaymentServiceImpl implements PaymentService {
 
 	@Override
 	@Transactional
+	@Cacheable(value = CacheKey.HISTORY_PREFIX,
+		key = "#email + '::' + #pageable.pageNumber + '::' + #pageable.pageSize",
+		unless = "#result.content.isEmpty()")
 	public Slice<Payment> findAllChargingHistories(String email, Pageable pageable) {
 		verifyMember(email);
 

@@ -18,3 +18,7 @@ Content-Type: application/json
   "email": "jangdm37@gmail.com",
   "password": "1234"
 }
+
+###
+GET localhost:8080/api/v1/payments/history
+Cookie: JSESSIONID=83B6932080E436DCB9CDB5351F6C9553
