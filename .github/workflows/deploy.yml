@@ -31,15 +31,25 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push user-api image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: jangdm37/user-api-repository
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f user-api/Dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "USER_API_IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Build, tag, and push payment-api image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: jangdm37/payment-api-repository
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f payment-api/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "PAYMENT_API_IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
@@ -48,10 +58,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.HOST_PORT }}
-          envs: IMAGE
+          envs: USER_API_IMAGE,PAYMENT_API_IMAGE
           script: |
             cd ~/app
-            sed -i '/^IMAGE=/d' .env  # 기존 IMAGE 라인 삭제
-            echo "IMAGE=$IMAGE" >> .env  # 새 IMAGE 값 추가
+            sed -i '/^USER_API_IMAGE=/d' .env
+            sed -i '/^PAYMENT_API_IMAGE=/d' .env
+            echo "USER_API_IMAGE=$USER_API_IMAGE" >> .env
+            echo "PAYMENT_API_IMAGE=$PAYMENT_API_IMAGE" >> .env
             chmod +x deploy.sh
             ./deploy.sh

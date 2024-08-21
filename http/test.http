@@ -1,0 +1,20 @@
+###
+# @no-redirect
+POST localhost:8081/api/v1/member/signup
+Content-Type: application/json
+
+{
+  "name": "장동민",
+  "email": "jangdm37@gmail.com",
+  "password": "1234",
+  "phoneNumber": "010-1234-5678"
+}
+
+###
+POST localhost:8081/api/v1/member/signIn
+Content-Type: application/json
+
+{
+  "email": "jangdm37@gmail.com",
+  "password": "1234"
+}
