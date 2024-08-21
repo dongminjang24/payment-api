@@ -77,7 +77,7 @@ public class Payment extends BaseEntity {
 			.orderId(orderId)
 			.customerEmail(customer.getEmail())
 			.customerName(customer.getName())
-			.createdAt(String.valueOf(customer.getCreateAt()))
+			.createdAt(String.valueOf(customer.getCreatedAt()))
 			.cancelYN(cancelYN)
 			.failReason(failReason)
 			.build();
