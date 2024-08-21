@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.PaymentErrorCode;
 import com.payment.common.exception.UserErrorCode;
+import com.payment.common.model.dto.MemberDto;
 import com.payment.common.model.dto.PaymentSuccessDto;
 import com.payment.common.model.entity.Member;
 import com.payment.common.repository.PaymentRepository;

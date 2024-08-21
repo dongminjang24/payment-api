@@ -28,10 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-@Table(indexes = {
-	@Index(name = "idx_payment_member", columnList = "customer"),
-	@Index(name = "idx_payment_paymentKey", columnList = "paymentKey"),
-})
+@Table(name = "payment")
 public class Payment extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

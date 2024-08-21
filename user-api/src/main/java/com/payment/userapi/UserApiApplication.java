@@ -8,14 +8,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
+
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"com.payment"})
+@EnableJpaRepositories(basePackages = {"com.payment.common.repository"})
 @EnableJpaAuditing
-@EntityScan(basePackages = {"com.payment"})
-@ComponentScan(basePackages = {"com.payment"})
+@EntityScan(basePackages = {"com.payment.common.model.entity"})
+@ComponentScan(basePackages = {"com.payment.userapi", "com.payment.common"})
 public class UserApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UserApiApplication.class, args);
-
 	}
 }
