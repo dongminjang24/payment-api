@@ -39,7 +39,7 @@ spring:
   application:
     name: user-api
   datasource:
-    url: ${USER_DATABASE_URL}
+    url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
