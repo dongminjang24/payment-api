@@ -17,7 +17,9 @@ import com.payment.common.response.SingleResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @Validated
 @RequiredArgsConstructor
@@ -29,8 +31,9 @@ public class PaymentController {
 	@PostMapping("/toss")
 	public ResponseEntity<SingleResponse<PaymentRequestDto>> requestTossPayment(
 		@RequestBody @Valid PaymentDto paymentReqDto) {
-		System.out.println("requestTossPayment ===>");
-
+		log.info("requestTossPayment ===>");
+		log.info("paymentReqDto = {}", paymentReqDto);
+		log.info("paymentReqDto.getEmail() = {}", paymentReqDto.getEmail());
 		PaymentRequestDto paymentRequestDto = paymentService.requestPayment(paymentReqDto.toEntity(), paymentReqDto.getEmail()).toPaymentResDto();
 		paymentRequestDto.setSuccessUrl(tossPaymentConfig.getSuccessUrl());
 		paymentRequestDto.setFailUrl(tossPaymentConfig.getFailUrl());
@@ -84,6 +87,7 @@ public class PaymentController {
 	public ResponseEntity tossPaymentAllHistory(
 		@RequestParam String email,
 		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
+		log.info("tossPaymentAllHistory ===>");
 		return ResponseEntity.ok().body(new SingleResponse<>(
 			paymentService.findAllChargingHistories(email,pageable)
 		));

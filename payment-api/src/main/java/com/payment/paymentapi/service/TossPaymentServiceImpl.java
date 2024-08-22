@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -53,7 +54,7 @@ public class TossPaymentServiceImpl implements PaymentService {
 	public Payment requestPayment(Payment payment, String userEmail) {
 		Member member = memberRepository.findByEmail(userEmail)
 			.orElseThrow(() -> new CustomException(UserErrorCode.MEMBER_NOT_FOUND));
-
+		log.debug("Member: {}", member);
 		if (payment.getAmount() < 1000) {
 			throw new CustomException(PaymentErrorCode.INVALID_PAYMENT_AMOUNT);
 		}

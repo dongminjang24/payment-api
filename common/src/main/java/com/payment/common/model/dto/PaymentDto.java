@@ -3,11 +3,11 @@ package com.payment.common.model.dto;
 import com.payment.common.model.entity.Payment;
 import com.payment.common.model.enum_type.PayType;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Setter
@@ -17,13 +17,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PaymentDto {
 
-	@NotBlank
+	@NonNull
 	private PayType payType;
 
-	@NotBlank
+	@NonNull
 	private Long amount;
 
-	@NotBlank
+	@NonNull
 	private String orderName;
 
 	private String yourSuccessUrl;

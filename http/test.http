@@ -20,5 +20,7 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8080/api/v1/payments/history
-Cookie: JSESSIONID=83B6932080E436DCB9CDB5351F6C9553
+GET localhost:8080/api/v1/payments/history?email=user@example.com
+
+###
+POST localhost:8080/api/v1/payments/toss

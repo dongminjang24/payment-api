@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"com.payment.common.repository"})
+@EnableJpaRepositories(basePackages = {"com.payment.common"})
 @EnableJpaAuditing
-@EntityScan(basePackages = {"com.payment.common.model.entity"})
+@EntityScan(basePackages = {"com.payment.common"})
 @ComponentScan(basePackages = {"com.payment.userapi", "com.payment.common"})
 public class UserApiApplication {
 	public static void main(String[] args) {

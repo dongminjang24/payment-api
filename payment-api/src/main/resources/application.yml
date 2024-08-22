@@ -1,29 +1,38 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-  redis:
-    cache:
-      type: redis
+  cache:
+    type: redis
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+server:
+  servlet:
+    session:
+      cookie:
+        domain: localhost
+        path: /
+        name: JSESSIONID
 ---
 spring:
+  h2:
+    console:
+        enabled: true
   config:
     activate:
       on-profile: dev
   application:
     name: payment-api
   datasource:
-    url: jdbc:h2:mem:paymentdb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:tcp://localhost/~/project-data
     username: sa
-    password:
+    password: 1234
     driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
