@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 
-@SpringBootApplication
-@EnableJpaRepositories(basePackages = {"com.payment.common"})
+@SpringBootApplication(scanBasePackages = {"com.payment"})
+@EnableJpaRepositories(basePackages = {"com.payment"})
 @EnableJpaAuditing
-@EntityScan(basePackages = {"com.payment.common"})
-@ComponentScan(basePackages = {"com.payment.userapi", "com.payment.common"})
+@EntityScan(basePackages = {"com.payment"})
+@ComponentScan(basePackages = { "com.payment"})
 public class UserApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UserApiApplication.class, args);
