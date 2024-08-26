@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':common')
+    implementation project(':database')
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     // payment-api에 특화된 의존성 추가
 }

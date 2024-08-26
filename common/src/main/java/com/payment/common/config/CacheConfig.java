@@ -44,8 +44,7 @@ public class CacheConfig {
 			// .entryTtl(Duration.ofDays(1))  원하는 시간만큼만 캐싱됨
 			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 			.serializeValuesWith(
-				RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-			;
+				RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 		return RedisCacheManager.RedisCacheManagerBuilder
 			.fromConnectionFactory(connectionFactory)
 			.cacheDefaults(redisCacheConfiguration)
