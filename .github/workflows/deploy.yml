@@ -73,7 +73,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.HOST_PORT }}
-          envs: USER_API_IMAGE,PAYMENT_API_IMAGE
+          envs: PAYMENT_API_IMAGE
           script: |
             cd ~/app
             sed -i '/^PAYMENT_API_IMAGE=/d' .env
