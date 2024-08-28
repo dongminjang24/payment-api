@@ -1,6 +1,9 @@
 package com.payment.common.config;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RestTemplateProperties {
-	private int connectTimeout;
-	private int readTimeout;
+	private Map<String, ClientProperties> clients = new HashMap<>();
+
+	@Getter
+	@Setter
+	public static class ClientProperties {
+		private int connectTimeout;
+		private int readTimeout;
+	}
 }

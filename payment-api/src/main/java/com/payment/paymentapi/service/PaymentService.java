@@ -43,10 +43,11 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @RequiredArgsConstructor
 public class PaymentService {
-	private final RestTemplate restTemplate;
+	private final Map<String, RestTemplate> restTemplates;
 	private final PaymentRepository paymentRepository;
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
+
 
 	public Payment requestPayment(Payment payment, String userEmail) {
 		Member member = memberRepository.findByEmail(userEmail)
@@ -105,7 +106,8 @@ public class PaymentService {
 
 		try {
 			HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-			result = restTemplate.postForObject(
+			RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
+			result = tossPaymentsRestTemplate.postForObject(
 				TossPaymentConfig.URL + "confirm",
 				requestEntity,
 				PaymentSuccessDto.class
@@ -182,7 +184,8 @@ public class PaymentService {
 		Map<String, Object> params = new HashMap<>();
 		HttpEntity<Map<String, Object>> mapHttpEntity = new HttpEntity<>(params, headers);
 		params.put("cancelReason", cancelReason);
-		return restTemplate.postForObject(TossPaymentConfig.URL + paymentKey + "/cancel",
+		RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
+		return tossPaymentsRestTemplate.postForObject(TossPaymentConfig.URL + paymentKey + "/cancel",
 			mapHttpEntity, Map.class);
 
 	}

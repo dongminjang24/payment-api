@@ -16,8 +16,14 @@ server:
         name: JSESSIONID
 rest:
   template:
-    connect-timeout: 5000
-    read-timeout: 5000
+    clients:
+      tossPayments:
+        connect-timeout: 5000  # 5초
+        read-timeout: 15000    # 15초
+      anotherClient:
+        connect-timeout: 3000
+        read-timeout: 3000
+
 ---
 spring:
   h2:
