@@ -190,10 +190,9 @@ public class PaymentService {
 
 	}
 
+
 	@Transactional(readOnly = true)
-	@Cacheable(value = CacheKey.HISTORY_PREFIX,
-		key = "#email + '::' + #pageable.pageNumber + '::' + #pageable.pageSize",
-		unless = "#result.content.isEmpty()")
+	@Cacheable(value = CacheKey.HISTORY_PREFIX, unless = "#result.content.isEmpty()")
 	public PaymentSliceDto findAllChargingHistories(String email, Pageable pageable) {
 		verifyMember(email);
 

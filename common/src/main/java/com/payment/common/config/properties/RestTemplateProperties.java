@@ -1,4 +1,4 @@
-package com.payment.common.config;
+package com.payment.common.config.properties;
 
 
 import java.util.HashMap;

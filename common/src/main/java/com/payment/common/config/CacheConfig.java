@@ -1,6 +1,8 @@
 package com.payment.common.config;
 
 
+import java.time.Duration;
+
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.payment.common.config.properties.CacheProperties;
+import com.payment.common.config.properties.RedisProperties;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class CacheConfig {
 
 	private final RedisProperties redisProperties;
+	private final CacheProperties cacheProperties;
 
 	@Bean
 	public RedisConnectionFactory connectionFactory() {
@@ -33,6 +39,7 @@ public class CacheConfig {
 	@Bean
 	public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
 		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+			.entryTtl(Duration.ofSeconds(cacheProperties.getTtl()))
 			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 			.serializeValuesWith(
 				RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));

@@ -23,6 +23,9 @@ rest:
       anotherClient:
         connect-timeout: 3000
         read-timeout: 3000
+cache:
+  ttl: 3600  # 1시간
+  eviction-strategy: allkeys-lru
 
 ---
 spring:

@@ -1,10 +1,10 @@
-package com.payment.common.config;
+package com.payment.paymentapi.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.payment.common.web.interceptor.LogInterceptor;
+import com.payment.paymentapi.logging.LogInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

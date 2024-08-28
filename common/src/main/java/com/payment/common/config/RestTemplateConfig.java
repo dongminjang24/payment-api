@@ -3,12 +3,13 @@ package com.payment.common.config;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+
+import com.payment.common.config.properties.RestTemplateProperties;
 
 import lombok.RequiredArgsConstructor;
 

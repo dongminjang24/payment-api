@@ -1,4 +1,4 @@
-package com.payment.common.web.interceptor;
+package com.payment.paymentapi.logging;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -7,6 +7,7 @@ import org.jboss.logging.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
