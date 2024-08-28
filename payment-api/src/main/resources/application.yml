@@ -14,6 +14,10 @@ server:
         domain: localhost
         path: /
         name: JSESSIONID
+rest:
+  template:
+    connect-timeout: 5000
+    read-timeout: 5000
 ---
 spring:
   h2:
