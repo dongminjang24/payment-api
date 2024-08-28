@@ -32,9 +32,6 @@ public class PaymentController {
 	@PostMapping("/toss")
 	public ResponseEntity<SingleResponse<ConvertPaymentRequestDto>> requestTossPayment(
 		@RequestBody @Valid PaymentDto paymentDto) {
-		log.info("requestTossPayment ===>");
-		log.info("paymentDto = {}", paymentDto);
-		log.info("paymentReqDto.getEmail() = {}", paymentDto.getEmail());
 		ConvertPaymentRequestDto paymentRequestDto = paymentService.requestPayment(paymentDto.toEntity(),
 			paymentDto.getEmail()).toPaymentRequestDto();
 		paymentRequestDto.setSuccessUrl(tossPaymentConfig.getSuccessUrl());
@@ -49,11 +46,9 @@ public class PaymentController {
 		@RequestParam String paymentKey,
 		@RequestParam Long amount
 		) {
-		System.out.println("orderId = " + orderId);
-		System.out.println("paymentKey = " + paymentKey);
-		System.out.println("amount = " + amount);
+
 		PaymentSuccessDto paymentSuccessDto = paymentService.paymentSuccess(paymentKey, orderId, amount);
-		return ResponseEntity.ok().body(new SingleResponse<>(paymentSuccessDto));
+		return ResponseEntity.ok(new SingleResponse<>(paymentSuccessDto));
 	}
 
 	@GetMapping("/toss/fail")
@@ -63,7 +58,7 @@ public class PaymentController {
 		@RequestParam String orderId) {
 		paymentService.paymentFail(code,message, orderId);
 
-		return ResponseEntity.ok().body(new SingleResponse<>(
+		return ResponseEntity.ok(new SingleResponse<>(
 			PaymentFailDto.builder()
 				.errorCode(code)
 				.errorMessage(message)
@@ -90,8 +85,7 @@ public class PaymentController {
 	public ResponseEntity tossPaymentAllHistory(
 		@RequestParam String email,
 		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
-		log.info("tossPaymentAllHistory ===>");
-		return ResponseEntity.ok().body(new SingleResponse<>(
+		return ResponseEntity.ok(new SingleResponse<>(
 			paymentService.findAllChargingHistories(email,pageable)
 		));
 	}

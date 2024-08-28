@@ -18,6 +18,7 @@ public enum PaymentErrorCode implements ErrorCode {
 	UNEXPECTED_PAYMENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "거래에서 예상치 못한 오류가 발생하였습니다."),
 	PAYMENT_NOT_ENOUGH_POINT(HttpStatus.BAD_REQUEST, "거래에 충분한 포인트가 없습니다.");
 
+	private final String name= name();
 	private final HttpStatus httpStatus;
 	private final String detail;
 

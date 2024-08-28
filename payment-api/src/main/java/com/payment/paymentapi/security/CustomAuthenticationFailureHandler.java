@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.payment.common.exception.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +44,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 			errMsg = "Expired password";
 		}
 
-		objectMapper.writeValue(response.getWriter(), errMsg);
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.name(),HttpStatus.UNAUTHORIZED.value(), errMsg);
+
+		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}
 }

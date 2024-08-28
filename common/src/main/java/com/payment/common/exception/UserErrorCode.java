@@ -13,6 +13,7 @@ public enum UserErrorCode implements ErrorCode {
 	DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입된 이메일입니다."),
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다.");
 
+	private final String name = name();
 	private final HttpStatus httpStatus;
 	private final String detail;
 
