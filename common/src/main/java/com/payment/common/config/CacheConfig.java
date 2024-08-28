@@ -1,8 +1,6 @@
 package com.payment.common.config;
 
-import java.time.Duration;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,26 +20,19 @@ import lombok.RequiredArgsConstructor;
 @EnableCaching
 public class CacheConfig {
 
-	@Value("${spring.data.redis.host}")
-	private String host;
-
-	@Value("${spring.data.redis.port}")
-	private String port;
+	private final RedisProperties redisProperties;
 
 	@Bean
 	public RedisConnectionFactory connectionFactory() {
-		//cluster로 작성할때
-		// RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-		redisStandaloneConfiguration.setHostName(host);
-		redisStandaloneConfiguration.setPort(Integer.parseInt(port));
+		redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+		redisStandaloneConfiguration.setPort(redisProperties.getPort());
 		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
 
 	@Bean
 	public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
 		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-			// .entryTtl(Duration.ofDays(1))  원하는 시간만큼만 캐싱됨
 			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 			.serializeValuesWith(
 				RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
@@ -50,5 +41,4 @@ public class CacheConfig {
 			.cacheDefaults(redisCacheConfiguration)
 			.build();
 	}
-
 }
