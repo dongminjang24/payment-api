@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_DIR" value="/logs/payment-api"/>
-    <property name="LOG_FILE_NAME" value="payment-api"/>
+    <property name="LOG_DIR" value="/logs"/>
+    <property name="LOG_FILE_NAME" value="log_file"/>
     <property name="LOGS_LEVEL" value="info"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
