@@ -16,9 +16,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class MDCLoggingFilter implements Filter {
+public class MDCLoggingFilter implements Filter {
 
 	private static final String REQUEST_ID_MDC_KEY = "request_id";
 	private static final String REQUEST_ID_HEADER = "X-Request-Id";
