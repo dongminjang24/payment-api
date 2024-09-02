@@ -2,7 +2,7 @@ package com.payment.paymentapi.dto;
 
 import java.time.LocalDateTime;
 
-import com.payment.model.enum_type.Role;
+import com.payment.common.enum_type.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

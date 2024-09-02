@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.PaymentErrorCode;
 import com.payment.common.exception.UserErrorCode;
-import com.payment.constants.CacheKey;
+import com.payment.common.constants.CacheKey;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
 import com.payment.paymentapi.config.TossPaymentConfig;

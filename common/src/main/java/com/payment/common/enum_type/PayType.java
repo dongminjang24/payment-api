@@ -1,4 +1,4 @@
-package com.payment.model.enum_type;
+package com.payment.common.enum_type;
 
 
 public enum PayType {

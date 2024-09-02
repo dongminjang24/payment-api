@@ -1,7 +1,7 @@
 package com.payment.paymentapi.dto;
 
 import com.payment.model.entity.Payment;
-import com.payment.model.enum_type.PayType;
+import com.payment.common.enum_type.PayType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

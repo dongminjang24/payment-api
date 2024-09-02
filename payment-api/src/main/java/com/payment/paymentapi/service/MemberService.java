@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.UserErrorCode;
 import com.payment.model.entity.Member;
-import com.payment.model.enum_type.Role;
+import com.payment.common.enum_type.Role;
 import com.payment.paymentapi.dto.SignUpDto;
 import com.payment.repository.MemberRepository;
 

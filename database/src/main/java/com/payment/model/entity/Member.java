@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.payment.model.enum_type.Role;
+import com.payment.common.enum_type.Role;
 
 @Entity
 @Getter

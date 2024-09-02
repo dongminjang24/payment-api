@@ -12,7 +12,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.payment.common.response.SingleResponse;
+import com.payment.common.response.CommonResponse;
+import com.payment.common.response.dto.SignInResponseDto;
 import com.payment.model.entity.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,13 +37,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		HttpSession session = request.getSession(true);
 		session.setAttribute("MEMBER_ID", user.getId());
 
-
-		Map<String, Object> result = new HashMap<>();
-		result.put("message", "Login successful");
-		result.put("userId", user.getId());
+		SignInResponseDto result = SignInResponseDto.builder()
+			.userId(user.getId())
+			.build();
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		SingleResponse<Map<String, Object>> responseEntity = ResponseEntity.ok(new SingleResponse<>(result)).getBody();
+		response.setCharacterEncoding("UTF-8");
+		CommonResponse<SignInResponseDto> responseEntity = new CommonResponse<>(result);
 		objectMapper.writeValue(response.getWriter(), responseEntity);
 	}
 }

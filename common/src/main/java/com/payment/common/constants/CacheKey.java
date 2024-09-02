@@ -1,4 +1,4 @@
-package com.payment.constants;
+package com.payment.common.constants;
 
 public class CacheKey {
 	public static final String HISTORY_PREFIX = "payment:history";

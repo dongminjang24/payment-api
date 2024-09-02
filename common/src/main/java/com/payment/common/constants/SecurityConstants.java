@@ -1,4 +1,4 @@
-package com.payment.constants;
+package com.payment.common.constants;
 
 public class SecurityConstants {
 	public static final String[] PUBLIC_URLS = {
