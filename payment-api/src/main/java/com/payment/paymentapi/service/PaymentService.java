@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.PaymentErrorCode;
@@ -37,13 +38,15 @@ import com.payment.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PaymentService {
-	private final Map<String, RestTemplate> restTemplates;
+	// private final Map<String, RestTemplate> restTemplates;
+	private final Map<String, WebClient> webClients;
 	private final PaymentRepository paymentRepository;
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
@@ -105,13 +108,23 @@ public class PaymentService {
 		PaymentSuccessDto result;
 
 		try {
-			HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-			RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
-			result = tossPaymentsRestTemplate.postForObject(
-				TossPaymentConfig.URL + "confirm",
-				requestEntity,
-				PaymentSuccessDto.class
-			);
+			// HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+			// RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
+			// result = tossPaymentsRestTemplate.postForObject(
+			// 	TossPaymentConfig.URL + "confirm",
+			// 	requestEntity,
+			// 	PaymentSuccessDto.class
+			// );
+
+			result = webClients.get("tossPayments")
+				.post()
+				.uri(TossPaymentConfig.URL + "confirm")
+				.headers(httpHeaders -> httpHeaders.addAll(headers))
+				.bodyValue(params)
+				.retrieve()
+				.bodyToMono(PaymentSuccessDto.class)
+				.block();
+
 			log.debug("Response: {}", result);
 		} catch (HttpClientErrorException e) {
 			log.error("Payment confirmation failed. Status code: {}, Response body: {}",
@@ -182,11 +195,20 @@ public class PaymentService {
 
 		HttpHeaders headers = getHeaders();
 		Map<String, Object> params = new HashMap<>();
-		HttpEntity<Map<String, Object>> mapHttpEntity = new HttpEntity<>(params, headers);
+		// HttpEntity<Map<String, Object>> mapHttpEntity = new HttpEntity<>(params, headers);
 		params.put("cancelReason", cancelReason);
-		RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
-		return tossPaymentsRestTemplate.postForObject(TossPaymentConfig.URL + paymentKey + "/cancel",
-			mapHttpEntity, Map.class);
+		// RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
+		// Map map = tossPaymentsRestTemplate.postForObject(TossPaymentConfig.URL + paymentKey + "/cancel",
+		// 	mapHttpEntity, Map.class);
+
+		return webClients.get("tossPayments")
+			.post()
+			.uri(TossPaymentConfig.URL + paymentKey + "/cancel")
+			.headers(httpHeaders -> httpHeaders.addAll(headers))
+			.bodyValue(params)
+			.retrieve()
+			.bodyToMono(Map.class)
+			.block();
 
 	}
 

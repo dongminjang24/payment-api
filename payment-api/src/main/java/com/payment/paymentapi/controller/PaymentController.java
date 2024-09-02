@@ -29,7 +29,7 @@ public class PaymentController {
 	private final TossPaymentConfig tossPaymentConfig;
 
 	@PostMapping("/toss")
-	public ResponseEntity<CommonResponse<ConvertPaymentRequestDto>> requestTossPayment(
+	public ResponseEntity<?> requestTossPayment(
 		@RequestBody @Valid PaymentDto paymentDto) {
 		ConvertPaymentRequestDto paymentRequestDto = paymentService.requestPayment(paymentDto.toEntity(),
 			paymentDto.getEmail()).toPaymentRequestDto();
@@ -40,7 +40,7 @@ public class PaymentController {
 
 
 	@GetMapping("/toss/success")
-	public ResponseEntity<CommonResponse<PaymentSuccessDto>> getPaymentSuccess(
+	public ResponseEntity<?> getPaymentSuccess(
 		@RequestParam String orderId,
 		@RequestParam String paymentKey,
 		@RequestParam Long amount
@@ -51,7 +51,7 @@ public class PaymentController {
 	}
 
 	@GetMapping("/toss/fail")
-	public ResponseEntity tossPaymentFail(
+	public ResponseEntity<?> tossPaymentFail(
 		@RequestParam String code,
 		@RequestParam String message,
 		@RequestParam String orderId) {
@@ -81,7 +81,7 @@ public class PaymentController {
 
 
 	@GetMapping("/history")
-	public ResponseEntity<?> tossPaymentAllHistory(
+	public ResponseEntity tossPaymentAllHistory(
 		@RequestParam String email,
 		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(new CommonResponse<>(
