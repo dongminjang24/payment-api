@@ -51,8 +51,11 @@ public class DistributeLockAop {
 		catch (Exception e) {
 			Thread.currentThread().interrupt();
 			throw new InterruptedException();
-		} finally {
-			rLock.unlock();    // (6)
+		}
+		 finally {
+			if (rLock.isHeldByCurrentThread()) {
+				rLock.unlock();
+			}  // (6)
 		}
 	}
 }
