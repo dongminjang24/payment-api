@@ -1,5 +1,7 @@
 package com.payment.paymentapi.controller;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -76,12 +78,11 @@ public class PaymentController {
 		return ResponseEntity.ok().body(new CommonResponse<>(
 			paymentService
 				.cancelPaymentPoint(email,paymentKey,cancelReason)));
-
 	}
 
 
 	@GetMapping("/history")
-	public ResponseEntity tossPaymentAllHistory(
+	public ResponseEntity<?> tossPaymentAllHistory(
 		@RequestParam String email,
 		@PageableDefault(size = 10, sort = "paymentId", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(new CommonResponse<>(

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -174,22 +176,23 @@ public class PaymentService {
 		payment.setFailReason(message);
 	}
 
+	@Async("threadPoolTaskExecutor")
 	@Transactional
-	public Map cancelPaymentPoint(String email, String paymentKey, String cancelReason) {
-		Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey,email).orElseThrow(
-			() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
-		);
-
-		if (payment.getCustomer().getPoint() >= payment.getAmount()) {
-			payment.setCancelYN(true);
-			payment.setCancelReason(cancelReason);
-			long resultPoint = payment.getCustomer().getPoint() - payment.getAmount();
-			payment.getCustomer().updatePoint(resultPoint);
-			return tossPaymentCancel(paymentKey, cancelReason);
-		}
-
-		throw new CustomException(PaymentErrorCode.PAYMENT_NOT_ENOUGH_POINT);
+	public CompletableFuture<Map> cancelPaymentPoint(String email, String paymentKey, String cancelReason) {
+		return CompletableFuture.supplyAsync(() -> {
+			Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey, email)
+				.orElseThrow(() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND));
+			if (payment.getCustomer().getPoint() >= payment.getAmount()) {
+				payment.setCancelYN(true);
+				payment.setCancelReason(cancelReason);
+				long resultPoint = payment.getCustomer().getPoint() - payment.getAmount();
+				payment.getCustomer().updatePoint(resultPoint);
+				return tossPaymentCancel(paymentKey, cancelReason);
+			}
+			throw new CustomException(PaymentErrorCode.PAYMENT_NOT_ENOUGH_POINT);
+		});
 	}
+
 
 	private Map tossPaymentCancel(String paymentKey, String cancelReason) {
 
