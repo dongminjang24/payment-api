@@ -39,6 +39,7 @@ subprojects {
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 		implementation 'com.fasterxml.jackson.core:jackson-databind'
 		implementation 'org.springframework.boot:spring-boot-starter-aop'
+		implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.26.0'
 		testImplementation 'com.h2database:h2'
 
 	}

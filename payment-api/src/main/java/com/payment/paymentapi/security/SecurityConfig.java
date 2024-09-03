@@ -46,8 +46,8 @@ public class SecurityConfig {
 				.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
 			)
 			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn")
+				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**","/payment/**", "/h2-console/**",
+					"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico")
 				.permitAll()
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll()

@@ -10,8 +10,6 @@ import lombok.Setter;
 public class CommonResponse<T> {
 	private int status = 200;
 	private String message = "SUCCESS";
-
-	@JsonUnwrapped
 	private T data;
 
 	public CommonResponse(T data) {

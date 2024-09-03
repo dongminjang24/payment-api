@@ -2,16 +2,19 @@ package com.payment.paymentapi.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.UserErrorCode;
 import com.payment.model.entity.Member;
 import com.payment.common.enum_type.Role;
+import com.payment.paymentapi.config.annotation.DistributeLock;
 import com.payment.paymentapi.dto.SignUpDto;
 import com.payment.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -22,6 +25,9 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
+
+	@Transactional
+	@DistributeLock(key = "'signUpMember'", leaseTime = 1) // 전역 락, 짧은 임대 시간
 	public Member signUpMember(SignUpDto signUpDto) {
 		memberRepository.findByEmail(signUpDto.getEmail()).ifPresent(member -> {
 			throw new CustomException(UserErrorCode.DUPLICATED_EMAIL);
