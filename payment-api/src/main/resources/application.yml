@@ -118,8 +118,7 @@ payment:
 logging:
   level:
     root: INFO
-    com.payment.paymentapi: DEBUG
-    com.zaxxer.hikari: DEBUG
+    com.payment.paymentapi: INFO
 
 server:
   port: 8080

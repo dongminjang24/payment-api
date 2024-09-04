@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 
+	private final org.springframework.core.env.Environment env;
 	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 	private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 	private final CustomLoginAuthenticationEntryPoint authenticationEntryPoint;
@@ -42,20 +43,28 @@ public class SecurityConfig {
 		http
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(Customizer.withDefaults())
-			.headers(headers -> headers
-				.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-			)
-			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**","/payment/**", "/h2-console/**",
-					"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico")
-				.permitAll()
-				.requestMatchers(PathRequest.toH2Console())
-				.permitAll()
-				.requestMatchers("/api/v1/payments/toss")
-				.hasRole("USER")
-				.anyRequest()
-				.authenticated()
-			)
+			.headers(headers -> {
+				if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+					headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
+				} else {
+					headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
+				}
+			})
+			.authorizeHttpRequests(authorize -> {
+				authorize
+					.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**","/payment/**",
+						"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico")
+					.permitAll()
+					.requestMatchers("/api/v1/payments/toss")
+					.hasRole("USER");
+
+				// H2 콘솔 설정을 개발 환경에서만 적용
+				if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+					authorize.requestMatchers(PathRequest.toH2Console()).permitAll();
+				}
+
+				authorize.anyRequest().authenticated();
+			})
 			.formLogin(login -> login
 				.loginProcessingUrl("/api/v1/member/signIn")
 				.usernameParameter("email")
