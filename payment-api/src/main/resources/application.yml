@@ -84,7 +84,7 @@ spring:
     name: payment-api
   datasource:
     master:
-      jdbc-url: ${DATABASE_URL}
+      url: ${DATABASE_URL}
       username: ${DATABASE_USERNAME}
       password: ${DATABASE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -92,7 +92,7 @@ spring:
         maximum-pool-size: 10
         minimum-idle: 5
     slave:
-      jdbc-url: ${DATABASE_SLAVE_URL}
+      url: ${DATABASE_SLAVE_URL}
       username: ${DATABASE_SLAVE_USERNAME}
       password: ${DATABASE_SLAVE_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -119,6 +119,7 @@ logging:
   level:
     root: INFO
     com.payment.paymentapi: INFO
-
+    com.zaxxer.hikari: DEBUG
 server:
   port: 8080
+
