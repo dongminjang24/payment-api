@@ -31,7 +31,7 @@ cache:
 spring:
   h2:
     console:
-        enabled: true
+      enabled: true
   config:
     activate:
       on-profile: dev
@@ -84,18 +84,19 @@ spring:
       hikari:
         maximum-pool-size: 10
         minimum-idle: 5
-      url: ${DATABASE_URL}
-      username: ${DATABASE_USERNAME}
-      password: ${DATABASE_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
     slave:
       hikari:
         maximum-pool-size: 20
         minimum-idle: 10
-      url: ${DATABASE_SLAVE_URL}
-      username: ${DATABASE_SLAVE_USERNAME}
-      password: ${DATABASE_SLAVE_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     show-sql: false
     hibernate:
