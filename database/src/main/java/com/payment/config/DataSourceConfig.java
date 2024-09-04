@@ -20,43 +20,35 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class DataSourceConfig {
 
-	public static final String MASTER_DATASOURCE = "masterDataSource";
-	public static final String SLAVE_DATASOURCE = "slaveDataSource";
-
-	@Bean(MASTER_DATASOURCE)
+	@Bean("masterDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.master")
 	public DataSource masterDataSource() {
-		return DataSourceBuilder.create()
-			.type(HikariDataSource.class)
-			.build();
+		return DataSourceBuilder.create().build();
 	}
 
-	@Bean(SLAVE_DATASOURCE)
+	@Bean("slaveDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.slave")
 	public DataSource slaveDataSource() {
-		return DataSourceBuilder.create()
-			.type(HikariDataSource.class)
-			.build();
+		return DataSourceBuilder.create().build();
 	}
 
+
+
 	@Bean
-	@DependsOn({MASTER_DATASOURCE, SLAVE_DATASOURCE})
+	@Primary
 	public DataSource routingDataSource(
-		@Qualifier(MASTER_DATASOURCE) DataSource masterDataSource,
-		@Qualifier(SLAVE_DATASOURCE) DataSource slaveDataSource) {
+		@Qualifier("masterDataSource") DataSource masterDataSource,
+		@Qualifier("slaveDataSource") DataSource slaveDataSource) {
 		RoutingDataSource routingDataSource = new RoutingDataSource();
-		Map<Object, Object> datasource = new HashMap<>();
-		datasource.put("master", masterDataSource);
-		datasource.put("slave", slaveDataSource);
-		routingDataSource.setTargetDataSources(datasource);
+
+		Map<Object, Object> targetDataSources = new HashMap<>();
+		targetDataSources.put("master", masterDataSource);
+		targetDataSources.put("slave", slaveDataSource);
+
+		routingDataSource.setTargetDataSources(targetDataSources);
 		routingDataSource.setDefaultTargetDataSource(masterDataSource);
+
 		return routingDataSource;
 	}
 
-	@Primary
-	@Bean
-	@DependsOn("routingDataSource")
-	public LazyConnectionDataSourceProxy dataSource(DataSource routingDataSource){
-		return new LazyConnectionDataSourceProxy(routingDataSource);
-	}
 }
