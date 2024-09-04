@@ -81,21 +81,21 @@ spring:
     name: payment-api
   datasource:
     master:
+      jdbc-url: ${DATABASE_URL}
+      username: ${DATABASE_USERNAME}
+      password: ${DATABASE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
       hikari:
         maximum-pool-size: 10
         minimum-idle: 5
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
     slave:
+      jdbc-url: ${DATABASE_SLAVE_URL}
+      username: ${DATABASE_SLAVE_USERNAME}
+      password: ${DATABASE_SLAVE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
       hikari:
         maximum-pool-size: 20
         minimum-idle: 10
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     show-sql: false

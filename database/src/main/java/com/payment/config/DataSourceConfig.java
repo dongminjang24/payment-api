@@ -24,7 +24,7 @@ public class DataSourceConfig {
 	public static final String SLAVE_DATASOURCE = "slaveDataSource";
 
 	@Bean(MASTER_DATASOURCE)
-	@ConfigurationProperties(prefix = "spring.datasource.master.hikari") // (1)
+	@ConfigurationProperties(prefix = "spring.datasource.master")
 	public DataSource masterDataSource() {
 		return DataSourceBuilder.create()
 			.type(HikariDataSource.class)
@@ -32,7 +32,7 @@ public class DataSourceConfig {
 	}
 
 	@Bean(SLAVE_DATASOURCE)
-	@ConfigurationProperties(prefix = "spring.datasource.slave.hikari") // (2)
+	@ConfigurationProperties(prefix = "spring.datasource.slave")
 	public DataSource slaveDataSource() {
 		return DataSourceBuilder.create()
 			.type(HikariDataSource.class)
@@ -53,10 +53,4 @@ public class DataSourceConfig {
 		return routingDataSource;
 	}
 
-	@Primary
-	@Bean
-	@DependsOn("routingDataSource")
-	public LazyConnectionDataSourceProxy dataSource(DataSource routingDataSource){
-		return new LazyConnectionDataSourceProxy(routingDataSource);
-	}
 }
