@@ -24,7 +24,7 @@ public class DataSourceConfig {
 	public static final String SLAVE_DATASOURCE = "slaveDataSource";
 
 	@Bean(MASTER_DATASOURCE)
-	@ConfigurationProperties(prefix = "spring.datasource.master") // (1)
+	@ConfigurationProperties(prefix = "spring.datasource.master.hikari") // (1)
 	public DataSource masterDataSource() {
 		return DataSourceBuilder.create()
 			.type(HikariDataSource.class)
@@ -32,7 +32,7 @@ public class DataSourceConfig {
 	}
 
 	@Bean(SLAVE_DATASOURCE)
-	@ConfigurationProperties(prefix = "spring.datasource.slave")
+	@ConfigurationProperties(prefix = "spring.datasource.slave.hikari") // (2)
 	public DataSource slaveDataSource() {
 		return DataSourceBuilder.create()
 			.type(HikariDataSource.class)
