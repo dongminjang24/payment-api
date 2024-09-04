@@ -18,10 +18,13 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %X{request_id} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %X{request_id} %X{datasource} %highlight(%-5level) %magenta(%-4relative) --- [%thread{10}] %cyan(%logger{20}) : %msg%n</pattern>
         </encoder>
     </appender>
 
+    <logger name="org.springframework.jdbc.core" level="TRACE"/>
+    <logger name="org.springframework.jdbc.datasource.DataSourceTransactionManager" level="DEBUG"/>
+    <logger name="com.payment.config.RoutingDataSource" level="DEBUG"/>
     <logger name="com.payment.paymentapi" level="DEBUG"/>
     <logger name="org.springframework" level="${LOGS_LEVEL}"/>
     <logger name="org.hibernate" level="${LOGS_LEVEL}"/>
