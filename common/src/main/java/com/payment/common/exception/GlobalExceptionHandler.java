@@ -7,27 +7,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.method.MethodValidationException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
 
 
-	@ExceptionHandler(CustomException.class)
-	protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+	@ExceptionHandler({CustomException.class})
+	protected ResponseEntity<ErrorResponse> handleException(CustomException e) {
 		ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
 		return new ResponseEntity<>(errorResponse, e.getErrorCode().getHttpStatus());
 	}
 
-	@ExceptionHandler(RuntimeException.class)
-	protected ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+	@ExceptionHandler(Exception.class)
+	protected ResponseEntity<ErrorResponse> handleException(Exception e) {
 		ErrorResponse errorResponse = new ErrorResponse(
 			HttpStatus.INTERNAL_SERVER_ERROR.name(),
 			HttpStatus.INTERNAL_SERVER_ERROR.value(),

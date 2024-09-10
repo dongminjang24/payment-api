@@ -41,6 +41,9 @@ public class WebClientConfig {
 				.clientConnector(new ReactorClientHttpConnector(httpClient))
 				.build();
 
+			//TODO: 로깅 설정 추가
+			//로그를 모아서 공통화시킨다.
+
 			webClients.put(clientName, webClient);
 		});
 

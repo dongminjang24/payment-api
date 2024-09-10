@@ -182,6 +182,7 @@ public class PaymentService {
 		return CompletableFuture.supplyAsync(() -> {
 			Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey, email)
 				.orElseThrow(() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND));
+
 			if (payment.getCustomer().getPoint() >= payment.getAmount()) {
 				payment.setCancelYN(true);
 				payment.setCancelReason(cancelReason);

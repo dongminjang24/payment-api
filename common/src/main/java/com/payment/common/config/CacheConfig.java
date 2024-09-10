@@ -55,9 +55,10 @@ public class CacheConfig {
 
 	@Bean
 	public RedissonClient redissonClient() {
-		RedissonClient redisson = null;
+		RedissonClient redisson;
 		Config config = new Config();
 		config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + redisProperties.getHost() + ":" + redisProperties.getPort());
+		config.setLockWatchdogTimeout(30000); // 30 seconds
 		redisson = Redisson.create(config);
 		return redisson;
 	}

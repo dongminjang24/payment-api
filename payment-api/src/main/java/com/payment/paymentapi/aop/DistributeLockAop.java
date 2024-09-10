@@ -37,8 +37,9 @@ public class DistributeLockAop {
 		RLock rLock = redissonClient.getLock(key);    // (3)
 
 		try {
-			boolean available = rLock.tryLock(distributeLock.waitTime(), distributeLock.leaseTime(), distributeLock.timeUnit());    // (4)
-			if (!available) {
+			boolean isLocked = rLock.tryLock(distributeLock.waitTime(), distributeLock.timeUnit());
+			if (!isLocked) {
+				log.warn("Failed to acquire lock for key: {}", key);
 				return false;
 			}
 

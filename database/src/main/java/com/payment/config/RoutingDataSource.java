@@ -6,13 +6,14 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile("!dev") // dev 프로파일이 아닌 경우에만 적용
 @Slf4j
 public class RoutingDataSource extends AbstractRoutingDataSource {
 
 	@Override
 	protected Object determineCurrentLookupKey() {
-		String dataSourceType = TransactionSynchronizationManager.isCurrentTransactionReadOnly() ? "slave" : "master";
+		boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
+		String dataSourceType = isReadOnly ? "slave" : "master";
+		// log.info("데이터베이스: {}", dataSourceType);
 		MDC.put("datasource", dataSourceType);
 		try {
 			return dataSourceType;
