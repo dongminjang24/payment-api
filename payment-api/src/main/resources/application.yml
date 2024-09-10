@@ -26,6 +26,11 @@ cache:
   ttl: 3600  # 1시간
   eviction-strategy: allkeys-lru
 
+monitoring:
+  slow-query:
+    slowQueryThreshold: 1
+
+
 ---
 spring:
   h2:

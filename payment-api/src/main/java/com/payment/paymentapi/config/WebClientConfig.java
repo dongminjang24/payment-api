@@ -1,7 +1,7 @@
 package com.payment.paymentapi.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.payment.paymentapi.config.properties.WebClientProperties;
+import com.payment.common.config.properties.WebClientProperties;
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

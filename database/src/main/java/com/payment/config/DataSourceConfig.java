@@ -1,5 +1,6 @@
 package com.payment.config;
 
+import com.payment.common.config.properties.SlowQueryMonitoringProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,9 +13,17 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 public class DataSourceConfig {
+
+	private final SlowQueryMonitoringProperties slowQueryMonitoringProperties;
 
 	@Bean("masterDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.master")
@@ -44,6 +53,13 @@ public class DataSourceConfig {
 		routingDataSource.setDefaultTargetDataSource(masterDataSource);
 		routingDataSource.afterPropertiesSet();
 
-		return new LazyConnectionDataSourceProxy(routingDataSource);
+		return new LazyConnectionDataSourceProxy(
+			ProxyDataSourceBuilder.create(routingDataSource)
+				.name("RoutingDataSource")
+				.logSlowQueryBySlf4j(slowQueryMonitoringProperties.getSlowQueryThreshold(), TimeUnit.SECONDS)
+				.countQuery()
+				.build()
+
+		);
 	}
 }

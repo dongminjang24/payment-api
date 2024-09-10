@@ -13,10 +13,12 @@ import com.payment.paymentapi.dto.SignUpDto;
 import com.payment.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -32,6 +34,9 @@ public class MemberService {
 		memberRepository.findByEmail(signUpDto.getEmail()).ifPresent(member -> {
 			throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
 		});
+		// log.debug("Before calling sleepMySQL");
+		// memberRepository.sleepMySQL(3);
+		// log.debug("After calling sleepMySQL");
 		Member member = Member.builder()
 			.name(signUpDto.getName())
 			.email(signUpDto.getEmail())
