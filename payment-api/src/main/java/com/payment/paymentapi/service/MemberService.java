@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.payment.common.exception.CustomException;
-import com.payment.common.exception.UserErrorCode;
+import com.payment.common.exception.ErrorCode;
 import com.payment.model.entity.Member;
 import com.payment.common.enum_type.Role;
 import com.payment.paymentapi.config.annotation.DistributeLock;
@@ -27,10 +27,10 @@ public class MemberService {
 
 
 	@Transactional
-	@DistributeLock(key = "'signUpMember'", leaseTime = 1) // 전역 락, 짧은 임대 시간
+	@DistributeLock(key = "'signUpMember'") // 전역 락, 짧은 임대 시간
 	public Member signUpMember(SignUpDto signUpDto) {
 		memberRepository.findByEmail(signUpDto.getEmail()).ifPresent(member -> {
-			throw new CustomException(UserErrorCode.DUPLICATED_EMAIL);
+			throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
 		});
 		Member member = Member.builder()
 			.name(signUpDto.getName())
@@ -44,6 +44,6 @@ public class MemberService {
 
 	public Member getMemberById(Long id) {
 		return memberRepository.findById(id)
-			.orElseThrow(() -> new CustomException(UserErrorCode.MEMBER_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 	}
 }

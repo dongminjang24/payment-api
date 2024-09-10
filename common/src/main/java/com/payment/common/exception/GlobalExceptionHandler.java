@@ -17,16 +17,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
 
 
-	@ExceptionHandler({CustomException.class})
-	protected ResponseEntity<ErrorResponse> handleException(CustomException e) {
-		ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-		return new ResponseEntity<>(errorResponse, e.getErrorCode().getHttpStatus());
-	}
-
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-		ErrorResponse errorResponse = new ErrorResponse(
-			HttpStatus.INTERNAL_SERVER_ERROR.name(),
+		ErrorResponse errorResponse;
+
+		// CustomException인 경우
+		if (e instanceof CustomException customException) {
+			errorResponse = new ErrorResponse(customException.getErrorCode());
+			return new ResponseEntity<>(errorResponse, customException.getErrorCode().getHttpStatus());
+		}
+
+		errorResponse = new ErrorResponse(
 			HttpStatus.INTERNAL_SERVER_ERROR.value(),
 			"예상치 못한 오류가 발생했습니다."
 		);
@@ -34,23 +35,4 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
 	}
 
 
-	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(
-		Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-		String code = extractStatusCode(statusCode);
-		ErrorResponse errorResponse = new ErrorResponse(
-			code,
-			statusCode.value(),
-			"서버에서 오류가 발생했습니다."
-		);
-		return new ResponseEntity<>(errorResponse, headers, statusCode);
-	}
-
-	private String extractStatusCode(HttpStatusCode statusCode) {
-		if (statusCode instanceof HttpStatus) {
-			return ((HttpStatus) statusCode).name();
-		}
-		// HttpStatus enum에 없는 상태 코드의 경우
-		return "STATUS_" + statusCode.value();
-	}
 }

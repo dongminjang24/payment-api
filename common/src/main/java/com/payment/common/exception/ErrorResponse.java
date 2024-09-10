@@ -10,7 +10,6 @@ import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
-	private final String code;
 	private final String message;
 	private final int status;
 
@@ -18,13 +17,11 @@ public class ErrorResponse {
 	private Map<String, String> errors;
 
 	public ErrorResponse(ErrorCode errorCode) {
-		this.code = errorCode.getName();
 		this.message = errorCode.getDetail();
 		this.status = errorCode.getHttpStatus().value();
 	}
 
-	public ErrorResponse(String code, int status,String message) {
-		this.code = code;
+	public ErrorResponse( int status,String message) {
 		this.message = message;
 		this.status = status;
 	}

@@ -14,19 +14,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.payment.common.exception.CustomException;
-import com.payment.common.exception.PaymentErrorCode;
-import com.payment.common.exception.UserErrorCode;
+import com.payment.common.exception.ErrorCode;
 import com.payment.common.constants.CacheKey;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
@@ -40,7 +37,6 @@ import com.payment.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -56,10 +52,10 @@ public class PaymentService {
 
 	public Payment requestPayment(Payment payment, String userEmail) {
 		Member member = memberRepository.findByEmail(userEmail)
-			.orElseThrow(() -> new CustomException(UserErrorCode.MEMBER_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 		log.debug("Member: {}", member);
 		if (payment.getAmount() < 1000) {
-			throw new CustomException(PaymentErrorCode.INVALID_PAYMENT_AMOUNT);
+			throw new CustomException(ErrorCode.INVALID_PAYMENT_AMOUNT);
 		}
 		//
 		OrderNumberGenerator orderNumberGenerator = new OrderNumberGenerator();
@@ -90,10 +86,10 @@ public class PaymentService {
 	public Payment verifyPayment(String orderId, Long amount) {
 
 		Payment payment = paymentRepository.findByOrderId(orderId)
-			.orElseThrow(() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
 
 		if (!payment.getAmount().equals(amount)) {
-			throw new CustomException(PaymentErrorCode.PAYMENT_AMOUNT_EXP);
+			throw new CustomException(ErrorCode.PAYMENT_AMOUNT_EXP);
 		}
 
 		return payment;
@@ -131,10 +127,10 @@ public class PaymentService {
 		} catch (HttpClientErrorException e) {
 			log.error("Payment confirmation failed. Status code: {}, Response body: {}",
 				e.getStatusCode(), e.getResponseBodyAsString());
-			throw new CustomException(PaymentErrorCode.PAYMENT_CONFIRMATION_FAILED);
+			throw new CustomException(ErrorCode.PAYMENT_CONFIRMATION_FAILED);
 		} catch (Exception e) {
 			log.error("Unexpected error during payment confirmation", e);
-			throw new CustomException(PaymentErrorCode.UNEXPECTED_PAYMENT_ERROR);
+			throw new CustomException(ErrorCode.UNEXPECTED_PAYMENT_ERROR);
 		}
 		return result;
 	}
@@ -168,7 +164,7 @@ public class PaymentService {
 	@Transactional
 	public void paymentFail(String code, String message, String orderId) {
 		Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(
-			() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND)
+			() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND)
 		);
 
 
@@ -181,7 +177,7 @@ public class PaymentService {
 	public CompletableFuture<Map> cancelPaymentPoint(String email, String paymentKey, String cancelReason) {
 		return CompletableFuture.supplyAsync(() -> {
 			Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey, email)
-				.orElseThrow(() -> new CustomException(PaymentErrorCode.PAYMENT_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
 
 			if (payment.getCustomer().getPoint() >= payment.getAmount()) {
 				payment.setCancelYN(true);
@@ -190,7 +186,7 @@ public class PaymentService {
 				payment.getCustomer().updatePoint(resultPoint);
 				return tossPaymentCancel(paymentKey, cancelReason);
 			}
-			throw new CustomException(PaymentErrorCode.PAYMENT_NOT_ENOUGH_POINT);
+			throw new CustomException(ErrorCode.PAYMENT_NOT_ENOUGH_POINT);
 		});
 	}
 
@@ -251,7 +247,7 @@ public class PaymentService {
 
 
 	public void verifyMember(String email) {
-		memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(UserErrorCode.MEMBER_NOT_FOUND));
+		memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 	}
 
 }

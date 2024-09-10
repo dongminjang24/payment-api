@@ -31,20 +31,20 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 		HttpServletResponse response,
 		AuthenticationException exception) throws IOException {
 
-		String errMsg = "Invalid Username or Password";
+		String errMsg = "아이디 및 비밀번호가 일치하지 않습니다.";
 
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
 		if(exception instanceof BadCredentialsException) {
-			errMsg = "Invalid Username or Password";
+			errMsg =  "아이디 및 비밀번호가 일치하지 않습니다.";
 		} else if(exception instanceof DisabledException) {
-			errMsg = "Locked";
+			errMsg = "계정이 비활성화되어 있습니다.";
 		} else if(exception instanceof CredentialsExpiredException) {
-			errMsg = "Expired password";
+			errMsg = "비밀번호가 만료되었습니다.";
 		}
 
-		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.name(),HttpStatus.UNAUTHORIZED.value(), errMsg);
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), errMsg);
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}
