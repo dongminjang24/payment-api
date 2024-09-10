@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.ErrorCode;
 import com.payment.common.constants.CacheKey;
+import com.payment.common.response.dto.PaymentCancelResponse;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
 import com.payment.paymentapi.config.TossPaymentConfig;
@@ -172,26 +173,26 @@ public class PaymentService {
 		payment.setFailReason(message);
 	}
 
-	@Async("threadPoolTaskExecutor")
 	@Transactional
-	public CompletableFuture<Map> cancelPaymentPoint(String email, String paymentKey, String cancelReason) {
-		return CompletableFuture.supplyAsync(() -> {
-			Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey, email)
-				.orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
+	public PaymentCancelResponse cancelPaymentPoint(String email, String paymentKey, String cancelReason) {
+		Payment payment = paymentRepository.findByPaymentKeyAndCustomer_Email(paymentKey,email).orElseThrow(
+			() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND)
+		);
 
-			if (payment.getCustomer().getPoint() >= payment.getAmount()) {
-				payment.setCancelYN(true);
-				payment.setCancelReason(cancelReason);
-				long resultPoint = payment.getCustomer().getPoint() - payment.getAmount();
-				payment.getCustomer().updatePoint(resultPoint);
-				return tossPaymentCancel(paymentKey, cancelReason);
-			}
-			throw new CustomException(ErrorCode.PAYMENT_NOT_ENOUGH_POINT);
-		});
+		if (payment.getCustomer().getPoint() >= payment.getAmount()) {
+			payment.setCancelYN(true);
+			payment.setCancelReason(cancelReason);
+			long resultPoint = payment.getCustomer().getPoint() - payment.getAmount();
+			payment.getCustomer().updatePoint(resultPoint);
+			return tossPaymentCancel(paymentKey, cancelReason);
+		}
+
+		throw new CustomException(ErrorCode.PAYMENT_NOT_ENOUGH_POINT);
 	}
 
 
-	private Map tossPaymentCancel(String paymentKey, String cancelReason) {
+
+	private PaymentCancelResponse tossPaymentCancel(String paymentKey, String cancelReason) {
 
 		HttpHeaders headers = getHeaders();
 		Map<String, Object> params = new HashMap<>();
@@ -207,7 +208,7 @@ public class PaymentService {
 			.headers(httpHeaders -> httpHeaders.addAll(headers))
 			.bodyValue(params)
 			.retrieve()
-			.bodyToMono(Map.class)
+			.bodyToMono(PaymentCancelResponse.class)
 			.block();
 
 	}

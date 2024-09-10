@@ -54,16 +54,16 @@ public class SecurityConfig {
 				authorize
 					.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**","/payment/**",
 						"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico")
-					.permitAll()
-					.requestMatchers("/api/v1/payments/toss")
-					.hasRole("USER");
+					.permitAll();
+					// .requestMatchers("/api/v1/payments/toss")
+					// .hasRole("USER");
 
 				// H2 콘솔 설정을 개발 환경에서만 적용
 				if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
 					authorize.requestMatchers(PathRequest.toH2Console()).permitAll();
 				}
 
-				authorize.anyRequest().authenticated();
+				authorize.anyRequest().permitAll();
 			})
 			.formLogin(login -> login
 				.loginProcessingUrl("/api/v1/member/signIn")
