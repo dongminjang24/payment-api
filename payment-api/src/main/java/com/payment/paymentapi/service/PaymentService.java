@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.payment.common.enum_type.NotificationStatus;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.ErrorCode;
 import com.payment.common.constants.CacheKey;
@@ -29,6 +30,7 @@ import com.payment.common.response.dto.PaymentCancelResponse;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
 import com.payment.paymentapi.config.TossPaymentConfig;
+import com.payment.paymentapi.dto.NotificationDto;
 import com.payment.paymentapi.dto.PaymentDto;
 import com.payment.paymentapi.dto.PaymentSliceDto;
 import com.payment.paymentapi.dto.PaymentSuccessDto;
@@ -49,7 +51,7 @@ public class PaymentService {
 	private final PaymentRepository paymentRepository;
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
-
+	private final RedisPubService redisPubService;
 
 	public Payment requestPayment(Payment payment, String userEmail) {
 		Member member = memberRepository.findByEmail(userEmail)
@@ -80,7 +82,16 @@ public class PaymentService {
 
 		payment.getCustomer().updatePoint(payment.getCustomer().getPoint() + amount);
 
-		memberRepository.save(payment.getCustomer());
+		Member member = memberRepository.save(payment.getCustomer());
+		NotificationDto messageDto = NotificationDto.builder()
+			.orderId(orderId)
+			.message("payment success")
+			.sender(member.getEmail())
+			.status(NotificationStatus.SUCCESS)
+			.recipient("payment")
+			.build();
+
+		redisPubService.pubMsgChannel("payment", messageDto);
 		return result;
 	}
 
@@ -184,7 +195,19 @@ public class PaymentService {
 			payment.setCancelReason(cancelReason);
 			long resultPoint = payment.getCustomer().getPoint() - payment.getAmount();
 			payment.getCustomer().updatePoint(resultPoint);
-			return tossPaymentCancel(paymentKey, cancelReason);
+			PaymentCancelResponse paymentCancelResponse = tossPaymentCancel(paymentKey, cancelReason);
+
+			NotificationDto messageDto = NotificationDto.builder()
+				.message("payment cancel")
+				.status(NotificationStatus.CANCEL)
+				.sender(payment.getCustomer().getEmail())
+				.orderId(payment.getOrderId())
+				.recipient("cancel")
+				.build();
+
+			redisPubService.pubMsgChannel("cancel", messageDto);
+
+			return paymentCancelResponse;
 		}
 
 		throw new CustomException(ErrorCode.PAYMENT_NOT_ENOUGH_POINT);

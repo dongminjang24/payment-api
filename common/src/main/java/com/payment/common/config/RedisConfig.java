@@ -14,7 +14,10 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -26,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableCaching
-public class CacheConfig {
+public class RedisConfig {
 
 	private final RedisProperties redisProperties;
 	private final CacheProperties cacheProperties;
@@ -54,6 +57,17 @@ public class CacheConfig {
 	}
 
 	@Bean
+	public RedisTemplate<?, ?> redisTemplate(){
+		RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+		redisTemplate.setConnectionFactory(connectionFactory()); // connection
+		redisTemplate.setKeySerializer(new StringRedisSerializer()); // key
+		// Java Object <-> JSON <-> String value
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+
+		return redisTemplate;
+	}
+
+	@Bean
 	public RedissonClient redissonClient() {
 		RedissonClient redisson;
 		Config config = new Config();
@@ -61,5 +75,12 @@ public class CacheConfig {
 		config.setLockWatchdogTimeout(30000); // 30 seconds
 		redisson = Redisson.create(config);
 		return redisson;
+	}
+
+	@Bean
+	public RedisMessageListenerContainer redisMessageListener(){
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory());
+		return container;
 	}
 }

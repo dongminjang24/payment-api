@@ -22,7 +22,8 @@ public enum ErrorCode {
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
 	LOCK_ACQUISITION_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "락을 획득하지 못했습니다."),
 	LOCK_INTERRUPTED(HttpStatus.INTERNAL_SERVER_ERROR, "락을 획득하는 중에 인터럽트가 발생했습니다."),
-	UNEXPECTED_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "예상치 못한 오류가 발생하였습니다.")
+	UNEXPECTED_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "예상치 못한 오류가 발생하였습니다."),
+	NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "알림을 찾을 수 없습니다."),
 	;
 
 	private final HttpStatus httpStatus;
