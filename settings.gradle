@@ -1,3 +1,4 @@
 rootProject.name = 'payment-system'
 include 'common', 'database', 'payment-api'
+include 'notification-api'
 

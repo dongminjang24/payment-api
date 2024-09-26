@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':common')
     implementation project(':database')
-    implementation project(':notification-api')
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     // payment-api에 특화된 의존성 추가
@@ -12,5 +11,5 @@ bootJar {
 }
 
 springBoot {
-    mainClass = 'com.payment.paymentapi.PaymentApiApplication'
+    mainClass = 'com.payment.notificationapi.NotificationApiApplication'
 }

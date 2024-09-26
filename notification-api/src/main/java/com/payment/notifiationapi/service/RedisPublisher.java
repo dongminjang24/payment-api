@@ -1,10 +1,10 @@
-package com.payment.paymentapi.service;
+package com.payment.notifiationapi.service;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
-import com.payment.paymentapi.dto.NotificationDto;
+import com.payment.common.dto.NotificationDto;
 
 @Service
 public class RedisPublisher {

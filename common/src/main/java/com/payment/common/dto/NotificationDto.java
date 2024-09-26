@@ -1,8 +1,7 @@
-package com.payment.paymentapi.dto;
+package com.payment.common.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 
 import com.payment.common.enum_type.NotificationStatus;
 

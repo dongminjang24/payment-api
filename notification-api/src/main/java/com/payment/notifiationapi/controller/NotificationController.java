@@ -1,18 +1,20 @@
-package com.payment.paymentapi.controller;
+package com.payment.notifiationapi.controller;
+
+
+
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.payment.common.dto.NotificationDto;
 import com.payment.common.response.CommonResponse;
-import com.payment.paymentapi.dto.NotificationDto;
-import com.payment.paymentapi.service.NotificationService;
+import com.payment.notifiationapi.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

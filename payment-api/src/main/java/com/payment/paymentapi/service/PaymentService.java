@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.payment.common.dto.NotificationDto;
 import com.payment.common.enum_type.NotificationStatus;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.ErrorCode;
@@ -29,8 +29,8 @@ import com.payment.common.constants.CacheKey;
 import com.payment.common.response.dto.PaymentCancelResponse;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
+import com.payment.notifiationapi.service.RedisPubService;
 import com.payment.paymentapi.config.TossPaymentConfig;
-import com.payment.paymentapi.dto.NotificationDto;
 import com.payment.paymentapi.dto.PaymentDto;
 import com.payment.paymentapi.dto.PaymentSliceDto;
 import com.payment.paymentapi.dto.PaymentSuccessDto;

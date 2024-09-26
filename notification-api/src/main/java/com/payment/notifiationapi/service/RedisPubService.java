@@ -1,14 +1,12 @@
-package com.payment.paymentapi.service;
+package com.payment.notifiationapi.service;
 
-import static com.payment.common.exception.ErrorCode.*;
 
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
-import com.payment.common.exception.CustomException;
+import com.payment.common.dto.NotificationDto;
 import com.payment.model.entity.Notification;
-import com.payment.paymentapi.dto.NotificationDto;
 import com.payment.repository.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;

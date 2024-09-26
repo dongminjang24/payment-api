@@ -1,4 +1,4 @@
-package com.payment.paymentapi.service;
+package com.payment.notifiationapi.service;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.payment.paymentapi.dto.NotificationDto;
+import com.payment.common.dto.NotificationDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
