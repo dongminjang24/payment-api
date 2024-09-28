@@ -22,6 +22,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.payment.common.dto.NotificationDto;
+import com.payment.common.dto.PaymentCancelEvent;
+import com.payment.common.dto.PaymentSuccessEvent;
 import com.payment.common.enum_type.NotificationStatus;
 import com.payment.common.exception.CustomException;
 import com.payment.common.exception.ErrorCode;
@@ -52,6 +54,7 @@ public class PaymentService {
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
 	private final RedisPubService redisPubService;
+	private final PaymentEventListener paymentEventListener;
 
 	public Payment requestPayment(Payment payment, String userEmail) {
 		Member member = memberRepository.findByEmail(userEmail)
@@ -83,15 +86,17 @@ public class PaymentService {
 		payment.getCustomer().updatePoint(payment.getCustomer().getPoint() + amount);
 
 		Member member = memberRepository.save(payment.getCustomer());
-		NotificationDto messageDto = NotificationDto.builder()
-			.orderId(orderId)
-			.message("payment success")
-			.sender(member.getEmail())
-			.status(NotificationStatus.SUCCESS)
-			.recipient("payment")
-			.build();
+		// NotificationDto messageDto = NotificationDto.builder()
+		// 	.orderId(orderId)
+		// 	.message("payment success")
+		// 	.sender(member.getEmail())
+		// 	.status(NotificationStatus.SUCCESS)
+		// 	.recipient("payment")
+		// 	.build();
+		//
+		// redisPubService.pubMsgChannel("payment", messageDto);
 
-		redisPubService.pubMsgChannel("payment", messageDto);
+		paymentEventListener.handlePaymentSuccessEvent(new PaymentSuccessEvent(paymentKey, orderId, amount, member.getEmail()));
 		return result;
 	}
 
@@ -197,15 +202,17 @@ public class PaymentService {
 			payment.getCustomer().updatePoint(resultPoint);
 			PaymentCancelResponse paymentCancelResponse = tossPaymentCancel(paymentKey, cancelReason);
 
-			NotificationDto messageDto = NotificationDto.builder()
-				.message("payment cancel")
-				.status(NotificationStatus.CANCEL)
-				.sender(payment.getCustomer().getEmail())
-				.orderId(payment.getOrderId())
-				.recipient("cancel")
-				.build();
+			// NotificationDto messageDto = NotificationDto.builder()
+			// 	.message("payment cancel")
+			// 	.status(NotificationStatus.CANCEL)
+			// 	.sender(payment.getCustomer().getEmail())
+			// 	.orderId(payment.getOrderId())
+			// 	.recipient("cancel")
+			// 	.build();
 
-			redisPubService.pubMsgChannel("cancel", messageDto);
+			paymentEventListener.handlePaymentCancelEvent(new PaymentCancelEvent(paymentKey, payment.getOrderId(), cancelReason,
+				payment.getCustomer().getEmail(), payment.getAmount()));
+
 
 			return paymentCancelResponse;
 		}
