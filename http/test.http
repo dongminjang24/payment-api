@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8080/api/v1/payments/history?email=user@example.com
+GET localhost:8080/api/v1/payments/history?email=jangdm37@gmail.com
 
 ###
 POST localhost:8080/api/v1/payments/toss
@@ -42,7 +42,8 @@ Content-Type: application/json
 
 
 ###
-GET localhost:8080/api/v1/notification?orderId=242683333376
+GET localhost:8081/api/v1/notification?orderId=242683333376
 
 ###
 GET localhost:8080/api/v1/payments/toss/cancel/point?email=user@example.com&paymentKey=tviva20240924174150zZBn1&cancelReason=test
+

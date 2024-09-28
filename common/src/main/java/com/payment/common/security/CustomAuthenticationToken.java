@@ -1,5 +1,6 @@
-package com.payment.paymentapi.security;
+package com.payment.common.security;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.util.Assert;
 
 public class CustomAuthenticationToken extends AbstractAuthenticationToken {
 
+	@Serial
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
 	private final Object principal;

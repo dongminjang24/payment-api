@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.payment.common.security.CustomAuthenticationToken;
 import com.payment.model.entity.Member;
 
 import lombok.RequiredArgsConstructor;
