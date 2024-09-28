@@ -1,4 +1,4 @@
-package com.payment.notifiationapi.service;
+package com.payment.notificationapi.service;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;

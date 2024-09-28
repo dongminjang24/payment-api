@@ -8,7 +8,7 @@ import com.payment.common.dto.NotificationDto;
 import com.payment.common.dto.PaymentCancelEvent;
 import com.payment.common.dto.PaymentSuccessEvent;
 import com.payment.common.enum_type.NotificationStatus;
-import com.payment.notifiationapi.service.RedisPubService;
+import com.payment.notificationapi.service.RedisPubService;
 
 import lombok.RequiredArgsConstructor;
 

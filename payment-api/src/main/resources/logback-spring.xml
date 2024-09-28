@@ -25,7 +25,7 @@
     <logger name="org.springframework.jdbc.core" level="WARN"/>
     <logger name="net.ttddyy.dsproxy.listener" level="${LOGS_LEVEL}" />
     <logger name="net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener" level="${LOGS_LEVEL}" />
-    <logger name="com.payment.notifiationapi" level="DEBUG"/>
+    <logger name="com.payment.notificationapi" level="DEBUG"/>
     <logger name="org.springframework" level="${LOGS_LEVEL}"/>
     <logger name="org.hibernate" level="${LOGS_LEVEL}"/>
 

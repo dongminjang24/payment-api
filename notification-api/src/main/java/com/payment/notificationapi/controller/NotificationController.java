@@ -1,4 +1,4 @@
-package com.payment.notifiationapi.controller;
+package com.payment.notificationapi.controller;
 
 
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.payment.common.dto.NotificationDto;
 import com.payment.common.response.CommonResponse;
-import com.payment.notifiationapi.service.NotificationService;
+import com.payment.notificationapi.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

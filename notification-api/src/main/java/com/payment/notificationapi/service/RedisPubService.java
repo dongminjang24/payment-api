@@ -1,4 +1,4 @@
-package com.payment.notifiationapi.service;
+package com.payment.notificationapi.service;
 
 
 import org.springframework.data.redis.listener.ChannelTopic;
