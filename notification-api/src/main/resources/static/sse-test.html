@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Test</title>
+</head>
+<body>
+<h1>SSE Test</h1>
+<div id="messages"></div>
+
+<script>
+    const eventSource = new EventSource('http://localhost:8081/api/v1/notification/subscribe');
+    const messagesDiv = document.getElementById('messages');
+
+    eventSource.onmessage = function(event) {
+        const message = document.createElement('p');
+        message.textContent = JSON.stringify(JSON.parse(event.data), null, 2);
+        messagesDiv.appendChild(message);
+    };
+
+    eventSource.onerror = function(error) {
+        console.error('SSE error:', error);
+        eventSource.close();
+    };
+</script>
+</body>
+</html>

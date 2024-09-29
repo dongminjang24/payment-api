@@ -1,4 +1,4 @@
-package com.payment.common.security;
+package com.payment.security;
 
 import java.io.Serial;
 import java.util.Collection;

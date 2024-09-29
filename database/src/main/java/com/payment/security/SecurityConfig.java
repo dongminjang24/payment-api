@@ -1,4 +1,4 @@
-package com.payment.paymentapi.security;
+package com.payment.security;
 
 import java.util.Arrays;
 
@@ -18,9 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +50,9 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> {
 				authorize
 					.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**","/payment/**",
-						"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico")
+						"/static/**", "/auth/**", "/main/**", "/api/v1/member/signup", "/api/v1/member/signIn","/favicon.ico"
+					,"api/v1/notification/subscribe","sse-test.html"
+					)
 					.permitAll();
 					// .requestMatchers("/api/v1/payments/toss")
 					// .hasRole("USER");

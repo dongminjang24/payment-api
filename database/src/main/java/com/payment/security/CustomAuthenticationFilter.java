@@ -1,4 +1,4 @@
-package com.payment.paymentapi.security;
+package com.payment.security;
 
 import java.io.IOException;
 
@@ -9,7 +9,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.payment.common.security.CustomAuthenticationToken;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -28,7 +28,7 @@ import com.payment.common.constants.CacheKey;
 import com.payment.common.response.dto.PaymentCancelResponse;
 import com.payment.model.entity.Member;
 import com.payment.model.entity.Payment;
-import com.payment.notificationapi.service.RedisPubService;
+// import com.payment.notificationapi.service.RedisPubService;
 import com.payment.paymentapi.config.TossPaymentConfig;
 import com.payment.paymentapi.dto.PaymentDto;
 import com.payment.paymentapi.dto.PaymentSliceDto;
@@ -50,7 +50,7 @@ public class PaymentService {
 	private final PaymentRepository paymentRepository;
 	private final MemberRepository memberRepository;
 	private final TossPaymentConfig tossPaymentConfig;
-	private final RedisPubService redisPubService;
+	// private final RedisPubService redisPubService;
 	private final PaymentEventListener paymentEventListener;
 
 	public Payment requestPayment(Payment payment, String userEmail) {

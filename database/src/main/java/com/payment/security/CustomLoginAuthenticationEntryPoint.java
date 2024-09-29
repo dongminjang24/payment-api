@@ -1,4 +1,4 @@
-package com.payment.paymentapi.security;
+package com.payment.security;
 
 import java.io.IOException;
 
