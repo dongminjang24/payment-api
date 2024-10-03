@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: app-kafka-1:9092
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
   application:
     name: notification-api
   batch:
