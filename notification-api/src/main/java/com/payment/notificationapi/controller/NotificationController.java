@@ -37,6 +37,6 @@ public class NotificationController {
 
 	@PostMapping("/send")
 	public void sendNotification(@RequestBody NotificationDto notificationDto) {
-		notificationService.sendNotification(notificationDto);
+		notificationService.processBatchNotification(notificationDto);
 	}
 }

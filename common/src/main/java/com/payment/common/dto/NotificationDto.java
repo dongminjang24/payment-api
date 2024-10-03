@@ -7,12 +7,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.payment.common.enum_type.NotificationStatus;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-
 public class NotificationDto implements Serializable {
 
 	private String message;
@@ -20,6 +20,7 @@ public class NotificationDto implements Serializable {
 	private String sender;
 	private String orderId;
 
+	@Builder
 	@JsonCreator
 	public NotificationDto(
 		@JsonProperty("orderId") String orderId,
@@ -31,4 +32,6 @@ public class NotificationDto implements Serializable {
 		this.sender = sender;
 		this.status = status;
 	}
+
+
 }

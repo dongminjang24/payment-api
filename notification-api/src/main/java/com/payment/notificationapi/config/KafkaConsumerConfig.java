@@ -34,6 +34,9 @@ public class KafkaConsumerConfig {
 	@Bean
 	public ConcurrentKafkaListenerContainerFactory<String, NotificationDto> kafkaListenerContainerFactory() {
 		ConcurrentKafkaListenerContainerFactory<String, NotificationDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setBatchListener(true);
+		factory.getContainerProperties().setIdleBetweenPolls(10000);
+		factory.getContainerProperties().setPollTimeout(5000);
 		factory.setConsumerFactory(consumerFactory());
 		return factory;
 	}

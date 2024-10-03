@@ -7,9 +7,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +40,11 @@ public class Notification  extends BaseEntity {
 	private String recipient;
 
 	@Enumerated(EnumType.STRING)
-	private NotificationStatus status;
+	private NotificationStatus status = NotificationStatus.PENDING;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "payment_id") // Payment 엔티티의 PK를 참조합니다.
+	private Payment payment;
 
 	public void updateStatus(NotificationStatus status) {
 		this.status = status;

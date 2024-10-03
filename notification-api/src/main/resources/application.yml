@@ -1,6 +1,14 @@
 spring:
   application:
     name: notification-api
+  batch:
+    created-at: ${BATCH_CREATED_AT:#{T(java.time.LocalDateTime).now().minusMinutes(5)}}  # 5분 전
+    jdbc:
+      initialize-schema: always
+  datasource:
+    hikari:
+      transaction-isolation: READ_COMMITTED
+      BINLOG_FORMAT: MIXED
   session:
     store-type: redis
     redis:
@@ -62,7 +70,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true

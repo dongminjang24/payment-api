@@ -5,9 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.payment.config.CommonDatabaseConfig;
 
+@EnableScheduling
 @EnableAsync
 @SpringBootApplication(scanBasePackages = {"com.payment"})
 @ComponentScan(basePackages = { "com.payment"})

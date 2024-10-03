@@ -1,5 +1,6 @@
 package com.payment.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 	Optional<Payment> findByPaymentKeyAndCustomer_Email(String paymentKey, String email);
 
 	Page<Payment> findAllByCustomer_Email(String email, Pageable pageable);
+
+	List<Payment> findByCreatedAtAfter(LocalDateTime fiveMinutesAgo);
+
 }

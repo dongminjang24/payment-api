@@ -83,15 +83,7 @@ public class PaymentService {
 		payment.getCustomer().updatePoint(payment.getCustomer().getPoint() + amount);
 
 		Member member = memberRepository.save(payment.getCustomer());
-		// NotificationDto messageDto = NotificationDto.builder()
-		// 	.orderId(orderId)
-		// 	.message("payment success")
-		// 	.sender(member.getEmail())
-		// 	.status(NotificationStatus.SUCCESS)
-		// 	.recipient("payment")
-		// 	.build();
-		//
-		// redisPubService.pubMsgChannel("payment", messageDto);
+
 
 		paymentEventListener.handlePaymentSuccessEvent(new PaymentSuccessEvent(paymentKey, orderId, amount, member.getEmail()));
 		return result;
@@ -120,13 +112,7 @@ public class PaymentService {
 		PaymentSuccessDto result;
 
 		try {
-			// HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-			// RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
-			// result = tossPaymentsRestTemplate.postForObject(
-			// 	TossPaymentConfig.URL + "confirm",
-			// 	requestEntity,
-			// 	PaymentSuccessDto.class
-			// );
+
 
 			result = webClients.get("tossPayments")
 				.post()
@@ -199,13 +185,6 @@ public class PaymentService {
 			payment.getCustomer().updatePoint(resultPoint);
 			PaymentCancelResponse paymentCancelResponse = tossPaymentCancel(paymentKey, cancelReason);
 
-			// NotificationDto messageDto = NotificationDto.builder()
-			// 	.message("payment cancel")
-			// 	.status(NotificationStatus.CANCEL)
-			// 	.sender(payment.getCustomer().getEmail())
-			// 	.orderId(payment.getOrderId())
-			// 	.recipient("cancel")
-			// 	.build();
 
 			paymentEventListener.handlePaymentCancelEvent(new PaymentCancelEvent(paymentKey, payment.getOrderId(), cancelReason,
 				payment.getCustomer().getEmail(), payment.getAmount()));
@@ -223,11 +202,7 @@ public class PaymentService {
 
 		HttpHeaders headers = getHeaders();
 		Map<String, Object> params = new HashMap<>();
-		// HttpEntity<Map<String, Object>> mapHttpEntity = new HttpEntity<>(params, headers);
 		params.put("cancelReason", cancelReason);
-		// RestTemplate tossPaymentsRestTemplate = restTemplates.get("tossPayments");
-		// Map map = tossPaymentsRestTemplate.postForObject(TossPaymentConfig.URL + paymentKey + "/cancel",
-		// 	mapHttpEntity, Map.class);
 
 		return webClients.get("tossPayments")
 			.post()
