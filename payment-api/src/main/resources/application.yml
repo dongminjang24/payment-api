@@ -1,4 +1,6 @@
 spring:
+  kafka:
+    bootstrap-servers: app-kafka-1:9092
   application:
     name: payment-api
   batch:
