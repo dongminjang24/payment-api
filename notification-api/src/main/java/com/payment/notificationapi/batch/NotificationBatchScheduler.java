@@ -22,7 +22,7 @@ public class NotificationBatchScheduler {
 	private final Job notificationJob;
 	private final BatchProperties batchProperties;
 
-	@Scheduled(fixedRate = 60000)
+	@Scheduled(fixedRate = 300000)
 	public void runBatch() throws Exception {
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addString("createdAt", batchProperties.getCreatedAt())
