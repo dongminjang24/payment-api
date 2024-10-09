@@ -1,13 +1,14 @@
 package com.payment.notificationapi.service;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -19,26 +20,26 @@ import com.payment.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
 
-	private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+	private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 	private final NotificationRepository notificationRepository;
 	private final PaymentRepository paymentRepository;
 
-	public SseEmitter subscribe() {
+	public SseEmitter subscribe(String memberEmail) {
 		SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-		emitters.add(emitter);
-		emitter.onCompletion(() -> emitters.remove(emitter));
-		emitter.onTimeout(() -> emitters.remove(emitter));
+		emitters.put(memberEmail, emitter);
+		emitter.onCompletion(() -> emitters.remove(memberEmail));
+		emitter.onTimeout(() -> emitters.remove(memberEmail));
 		return emitter;
 	}
 
-	@Transactional
+
+	// 기존 transaction 어노테이션 제거
 	@KafkaListener(topics = "payment-notifications", groupId = "notification-group")
 	public void listenNotifications(NotificationDto notificationDto) {
 		log.info("Received notification: {}", notificationDto);
@@ -48,38 +49,61 @@ public class NotificationService {
 	@Transactional
 	public void processNotification(NotificationDto notificationDto) {
 		try {
-			sendNotification(notificationDto);
-			saveNotification(notificationDto, NotificationStatus.SUCCESS);
-			updatePaymentNotiStatus(notificationDto, NotificationStatus.SUCCESS);
+			// 1. 알림 상태를 PENDING으로 저장
+			saveNotification(notificationDto, NotificationStatus.PENDING);
+			updatePaymentNotiStatus(notificationDto, NotificationStatus.PENDING);
+
+			// 2. SSE 전송 (트랜잭션 외부에서 실행)
+			boolean sent = sendNotification(notificationDto);
+
+			// 3. 결과에 따라 상태 업데이트
+			NotificationStatus finalStatus = sent ? NotificationStatus.SUCCESS : NotificationStatus.FAILURE;
+			saveNotification(notificationDto, finalStatus);
+			updatePaymentNotiStatus(notificationDto, finalStatus);
+
 		} catch (Exception e) {
-			log.error("Failed to send notification for orderId: {}", notificationDto.getOrderId(), e);
+			log.error("Failed to process notification for orderId: {}", notificationDto.getOrderId(), e);
 			saveNotification(notificationDto, NotificationStatus.FAILURE);
 			updatePaymentNotiStatus(notificationDto, NotificationStatus.FAILURE);
 		}
 	}
 
-	private void sendNotification(NotificationDto notificationDto) {
-		List<SseEmitter> deadEmitters = new ArrayList<>();
-		emitters.forEach(emitter -> {
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean sendNotification(NotificationDto notificationDto) {
+		boolean sent = false;
+		SseEmitter emitter = emitters.get(notificationDto.getSender());
+		if (emitter != null) {
 			try {
 				emitter.send(notificationDto);
+				sent = true;
 			} catch (IOException e) {
-				deadEmitters.add(emitter);
+				emitters.remove(notificationDto.getSender());
+				log.warn("Failed to send notification to recipient: {}, removing emitter", notificationDto.getSender(), e);
 			}
-		});
-		emitters.removeAll(deadEmitters);
+		}
+		return sent;
 	}
 
-	private void saveNotification(NotificationDto notificationDto, NotificationStatus status) {
-		notificationRepository.save(Notification.builder()
-			.orderId(notificationDto.getOrderId())
-			.message(notificationDto.getMessage())
-			.recipient(notificationDto.getSender())
-			.status(status)
-			.build());
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void saveNotification(NotificationDto notificationDto, NotificationStatus status) {
+		notificationRepository.findByOrderId(notificationDto.getOrderId()).ifPresentOrElse(
+			existingNotification -> {
+				existingNotification.updateStatus(status);
+				notificationRepository.save(existingNotification);
+			},
+			() -> {
+				notificationRepository.save(Notification.builder()
+					.orderId(notificationDto.getOrderId())
+					.message(notificationDto.getMessage())
+					.recipient(notificationDto.getSender())
+					.status(status)
+					.build());
+			}
+		);
 	}
 
-	private void updatePaymentNotiStatus(NotificationDto notificationDto, NotificationStatus status) {
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void updatePaymentNotiStatus(NotificationDto notificationDto, NotificationStatus status) {
 		String orderId = notificationDto.getOrderId();
 		paymentRepository.findByOrderId(orderId)
 			.ifPresentOrElse(

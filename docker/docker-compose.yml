@@ -6,7 +6,7 @@
 #      - "2181:2181"
 #  kafka:
 #    image: wurstmeister/kafka:latest
-#    container_name: kafka
+#    container_name: localhost
 #    ports:
 #      - "9092:9092"
 #    environment:
