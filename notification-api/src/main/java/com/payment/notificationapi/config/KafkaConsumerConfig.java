@@ -31,7 +31,7 @@ public class KafkaConsumerConfig {
 		config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		config.put(JsonDeserializer.TRUSTED_PACKAGES, "com.payment.common.dto");
-
+		config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		return new DefaultKafkaConsumerFactory<>(config,
 			new StringDeserializer(),
 			new JsonDeserializer<>(NotificationDto.class, false));

@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +42,15 @@ public class NotificationService {
 
 	// 기존 transaction 어노테이션 제거
 	@KafkaListener(topics = "payment-notifications", groupId = "notification-group")
-	public void listenNotifications(NotificationDto notificationDto) {
+	public void listenNotifications(NotificationDto notificationDto, Acknowledgment acknowledgment) {
 		log.info("Received notification: {}", notificationDto);
-		processNotification(notificationDto);
+		try {
+			processNotification(notificationDto);
+			acknowledgment.acknowledge();  // 메시지 처리 후 오프셋 커밋
+		} catch (Exception e) {
+			log.error("Error processing notification", e);
+			// 여기서는 acknowledge()를 호출하지 않습니다. 실패한 경우 재처리를 위해
+		}
 	}
 
 	@Transactional
