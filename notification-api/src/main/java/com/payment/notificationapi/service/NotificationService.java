@@ -41,8 +41,8 @@ public class NotificationService {
 
 
 	// 기존 transaction 어노테이션 제거
-	// KAFKA_CREATE_TOPICS: "payment-notifications:3:1"
-	@KafkaListener(topics = "payment-notifications", groupId = "notification-group", concurrency = "3")
+	// KAFKA_CREATE_TOPICS: "payment-notifications:1:1"
+	@KafkaListener(topics = "payment-notifications", groupId = "notification-group", concurrency = "1")
 	public void listenNotifications(NotificationDto notificationDto, Acknowledgment acknowledgment) {
 		log.info("Received notification: {}", notificationDto);
 		try {
