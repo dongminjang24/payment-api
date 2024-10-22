@@ -46,8 +46,19 @@ public class Notification  extends BaseEntity {
 	@JoinColumn(name = "payment_id") // Payment 엔티티의 PK를 참조합니다.
 	private Payment payment;
 
+	@Column(name = "failure_reason")
+	private String failureReason;
+
+
 	public void updateStatus(NotificationStatus status) {
 		this.status = status;
 	}
 
+	public void updatePayment(Payment payment) {
+		this.payment = payment;
+	}
+
+	public void updateFailureReason(String reason) {
+		this.failureReason = reason;
+	}
 }

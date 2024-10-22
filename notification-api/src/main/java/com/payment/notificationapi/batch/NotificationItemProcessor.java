@@ -11,10 +11,12 @@ public class NotificationItemProcessor implements ItemProcessor<Payment, Notific
 
 	@Override
 	public NotificationDto process(Payment payment) {
+		String recipientEmail = payment.getCustomer().getEmail();  // 실제 사용자 이메일 사용
+
 		return NotificationDto.builder()
 			.orderId(payment.getOrderId())
 			.message("Payment amount : " + payment.getAmount() + " Payment createdAt : " + payment.getCreatedAt())
-			.sender("BatchJob")
+			.sender(recipientEmail)
 			.build();
 	}
 }

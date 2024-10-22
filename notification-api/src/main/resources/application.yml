@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
   application:
     name: notification-api
   batch:
@@ -81,8 +81,7 @@ spring:
 
 logging:
   level:
-    root: DEBUG
-    com.payment.notifiationapi: DEBUG
+    root: INFO
 
 server:
   port: 8081

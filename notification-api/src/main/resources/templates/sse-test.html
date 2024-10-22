@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Test</title>
+    <style>
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        #status {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>SSE Test</h1>
+<div id="status">연결 상태: 연결 중...</div>
+<div id="messages"></div>
+
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const statusDiv = document.getElementById('status');
+    // 실제 사용자 이메일로 변경
+    // 테스트용 이메일
+    // URL에 이메일 파라미터 추가
+    const eventSource = new EventSource('http://localhost:8081/api/v1/notification/subscribe', {
+        withCredentials: true  // 인증 정보 포함
+    });
+
+
+    function addMessage(text, type = 'info') {
+        console.log('Adding message:', text);
+        const message = document.createElement('div');
+        message.className = 'message';
+        message.textContent = `${new Date().toLocaleTimeString()} - ${text}`;
+        messagesDiv.insertBefore(message, messagesDiv.firstChild);
+    }
+
+    // const eventSource = new EventSource('http://localhost:8081/api/v1/notification/subscribe');
+
+    // 연결 성공 시
+    eventSource.onopen = function(event) {
+        console.log('SSE Connection opened');
+        statusDiv.textContent = '연결 상태: 연결됨';
+        addMessage('SSE 연결이 설정되었습니다.');
+    };
+
+    // 일반 메시지
+    eventSource.onmessage = function(event) {
+        console.log('Received message:', event.data);
+        try {
+            const data = JSON.parse(event.data);
+            addMessage(`수신된 메시지: ${JSON.stringify(data, null, 2)}`);
+        } catch (e) {
+            addMessage(`수신된 메시지: ${event.data}`);
+        }
+    };
+
+    // 특정 이벤트 리스너
+    eventSource.addEventListener('notification', function(event) {
+        console.log('Received notification event:', event.data);
+        try {
+            const data = JSON.parse(event.data);
+            addMessage(`알림: ${JSON.stringify(data, null, 2)}`);
+        } catch (e) {
+            addMessage(`알림: ${event.data}`);
+        }
+    });
+
+    // 연결 이벤트
+    eventSource.addEventListener('connect', function(event) {
+        console.log('Received connect event:', event.data);
+        addMessage(`연결 이벤트: ${event.data}`);
+    });
+
+    // 에러 발생 시
+    eventSource.onerror = function(error) {
+        console.error('SSE error:', error);
+        statusDiv.textContent = '연결 상태: 에러 발생';
+        addMessage('연결 에러가 발생했습니다.', 'error');
+
+        // 연결이 끊어졌을 때 재연결 시도
+        if (eventSource.readyState === EventSource.CLOSED) {
+            statusDiv.textContent = '연결 상태: 재연결 시도 중...';
+            setTimeout(() => {
+                window.location.reload();
+            }, 5000);
+        }
+    };
+
+    // 페이지 종료 시 연결 정리
+    window.addEventListener('beforeunload', () => {
+        if (eventSource) {
+            eventSource.close();
+        }
+    });
+</script>
+</body>
+</html>

@@ -24,6 +24,13 @@ public enum ErrorCode {
 	LOCK_INTERRUPTED(HttpStatus.INTERNAL_SERVER_ERROR, "락을 획득하는 중에 인터럽트가 발생했습니다."),
 	UNEXPECTED_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "예상치 못한 오류가 발생하였습니다."),
 	NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "알림을 찾을 수 없습니다."),
+
+
+	NOTIFICATION_PROCESSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알림 처리 중 오류가 발생했습니다."),
+	NOTIFICATION_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알림 전송에 실패했습니다."),
+	NOTIFICATION_STATUS_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알림 상태 업데이트에 실패했습니다."),
+	NOTIFICATION_PAYMENT_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 알림 상태 업데이트에 실패했습니다."),
+	SSE_CONNECTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 연결 설정에 실패했습니다.");
 	;
 
 	private final HttpStatus httpStatus;

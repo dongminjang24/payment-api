@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.payment.common.dto.NotificationDto;
+import com.payment.common.exception.CustomException;
+import com.payment.common.exception.ErrorCode;
 import com.payment.model.entity.Member;
 import com.payment.notificationapi.service.NotificationService;
+import com.payment.notificationapi.service.SendNotification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,16 +28,17 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationController {
 
 	private final NotificationService notificationService;
-
+	private final SendNotification sendNotification;
 	// @GetMapping
 	// public ResponseEntity<?> getNotification(@RequestParam String orderId) {
 	// 	List<NotificationDto> notification = notificationService.getNotification(orderId);
 	// 	return ResponseEntity.ok(new CommonResponse<>(notification));
 	// }
 
+
 	@GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public SseEmitter subscribe(@AuthenticationPrincipal Member member) {
-		return notificationService.subscribe(member.getEmail());
+		return sendNotification.subscribe(member.getEmail());
 	}
 
 	@PostMapping("/send")

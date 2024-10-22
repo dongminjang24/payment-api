@@ -12,7 +12,14 @@
 #    environment:
 #      KAFKA_ADVERTISED_HOST_NAME: localhost
 #      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_CREATE_TOPICS: "payment-notifications:1:1,batch-trigger-topic:1:1"
+#      KAFKA_CREATE_TOPICS: >-
+#        payment-notifications:1:1,
+#        payment-notifications.DLT:1:1,
+#        batch-trigger-topic:1:1
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+#      # DLQ 토픽 설정
+#      KAFKA_TOPIC_PAYMENT_NOTIFICATIONS_DLT_RETENTION_MS: 604800000  # 7일
+#      KAFKA_TOPIC_PAYMENT_NOTIFICATIONS_DLT_CLEANUP_POLICY: delete
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    depends_on:
