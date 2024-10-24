@@ -57,6 +57,7 @@ public class SendNotification {
 		return emitter;
 	}
 
+	// 주석으로 강조하기!!!!
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public boolean sendNotification(NotificationDto notificationDto) {
 		String recipient = notificationDto.getSender();

@@ -31,6 +31,15 @@ public class NotificationService {
 
 	// 기존 transaction 어노테이션 제거
 	// KAFKA_CREATE_TOPICS: "payment-notifications:1:1"
+	/* 커스텀 어노테이션 => 커밋을 찍는 것을 빠뜨리지 않게
+	* ack를 여기저기 하다보면 실수가 생길 수 잇음.
+	* aop를 활용해서 커스텀 어노테이션을 생성하여
+	* kafkalistener어노테이션 (위에 또는 함께) 끝나면 무조건 커밋을 찍는
+	* 빠뜨리지 않도록
+	*
+	* 주석으로 항상 어필을 하기!!!
+	* 애매한거 있으면 회사에 문의하기 -> 답장 안올 시에 주석으로 설명
+	*  */
 	@KafkaListener(topics = "payment-notifications", groupId = "notification-group", concurrency = "1")
 	public void listenNotifications(NotificationDto notificationDto, Acknowledgment acknowledgment) {
 		log.info("Received notification: {}", notificationDto);
@@ -40,6 +49,10 @@ public class NotificationService {
 		} catch (Exception e) {
 			log.error("Error processing notification", e);
 			acknowledgment.acknowledge();
+			/*여기서 dlq를 아예 바로 발행해도 좋음
+			* 여기서 정보들을 넣어주는 식으로 dto를 이용해서
+			*
+			* */
 			throw e;
 		}
 	}
